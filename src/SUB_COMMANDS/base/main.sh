@@ -83,7 +83,7 @@ apt install -y \
   guake python-gi-cairo python-gobject \
         curl git intel-microcode firmware-realtek \
         firmware-atheros bumblebee-nvidia primus \
-        primus-libs:i386
+        primus-libs:i386 mate-tweak
 apt autoremove
 
 ####################
