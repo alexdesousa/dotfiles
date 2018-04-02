@@ -99,10 +99,14 @@ fi
 asdf install nodejs "$VERSION"
 asdf global nodejs "$VERSION"
 
-echo "export PATH=\"$(npm config get prefix)/bin:\$PATH\"" >> $CURRENT_HOME/.zshrc
+BIN="$CURRENT_HOME/.asdf/installs/nodejs/$VERSION/.npm/bin"
+echo "export PATH=\"$BIN:\$PATH\"" >> $CURRENT_HOME/.zshrc
+
+export PATH="$BIN:$PATH"
 
 #################
 # Install truffle
 
 npm install -g truffle
 npm install -g ganache-cli
+npm install -g solium
