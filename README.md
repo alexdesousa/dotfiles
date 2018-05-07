@@ -22,9 +22,9 @@ The available tasks are:
   - `ganache`  - It installs Ganache 1.1.0.
   - `spotify`  - It installs the latest Spotify client version.
   - `slack`    - It installs the latest version of Slack.
+  - `erlang`   - It installs the latest version of Erlang.
+  - `elixir`   - It installs the latest versions of Erlang and Elixir.
 
 In the future, i'll add:
   - `redis`    - It installs the latest version of Redis.
-  - `erlang`   - It installs the latest version of Erlang.
   - `rabbitmq` - It installs the latest version of RabbitMQ and Erlang.
-  - `elixir`   - It installs the latest version of Elixir and Erlang.
