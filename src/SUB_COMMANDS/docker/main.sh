@@ -70,6 +70,8 @@ done
 # BEGIN
 # FUNCTIONALITY
 
+# docker
+
 apt update
 apt install -y \
      apt-transport-https \
@@ -89,7 +91,21 @@ add-apt-repository \
 
 apt update
 apt install -y docker-ce
-docker run hello-world
+
+usermod -a -G docker $CURRENT_USER
+
+sudo -u $CURRENT_USER docker run hello-world
+
+# docker-compose
+
+VERSION=1.21.2
+FILE=$VERSION/docker-compose-$(uname -s)-$(uname -m)
+
+curl \
+  -L https://github.com/docker/compose/releases/download/$FILE \
+  -o /usr/local/bin/docker-compose
+
+chmod -o /usr/local/bin/docker-compose
 
 # END
 ###############################################################################
