@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# Variable appears unused. Verify it or export it.
-# shellcheck disable=SC2034
-
 ###############################################################################
 # BEGIN: Header
 
@@ -20,10 +17,9 @@ then
   CURRENT_HOME="$HOME"
 else
   CURRENT_USER="$SUDO_USER"
-  CURRENT_HOME=$(sudo -u "$SUDO_USER" echo "$HOME")
+  CURRENT_HOME=$(sudo -u "$SUDO_USER" -H -s eval 'echo $HOME')
 fi
 PROJECT_ROOT="$DIR/../../.."
-ETC="$PROJECT_ROOT/etc"
 
 shift
 
@@ -117,6 +113,19 @@ function install_package {
   dpkg -i "$WORKING_DIR/browsh.deb"
 }
 
+##
+# Adds alias
+function add_alias {
+  sed \
+    -i '/^alias browsh="browsh --firefox\.path \/opt\/firefox\/firefox"$/d' \
+    "$CURRENT_HOME/.zshrc"
+  echo "$CURRENT_USER - $CURRENT_HOME"
+  sudo \
+    -u "$CURRENT_USER" \
+    echo \
+      -e 'alias browsh="browsh --firefox.path /opt/firefox/firefox"' >> "$CURRENT_HOME/.zshrc"
+}
+
 # END: Functions
 ###############################################################################
 
@@ -129,6 +138,7 @@ function install_package {
 function main {
   install_dependencies
   install_package
+  add_alias
 
   exit $?
 }
