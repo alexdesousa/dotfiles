@@ -1,0 +1,36 @@
+- name: Set up local workstation
+  hosts: local
+  roles:
+    - role: base
+      tags:
+        - base
+    - role: git
+      tags:
+        - git
+    - role: zsh
+      tags:
+        - zsh
+    - role: tmux
+      tags:
+        - tmux
+    - role: fzf
+      tags:
+        - fzf
+    - role: vim
+      tags:
+        - vim
+    - role: asdf
+      tags:
+        - asdf
+    - role: docker
+      tags:
+        - docker
+    - role: erlang
+      tags:
+        - erlang
+    - role: elixir
+      tags:
+        - elixir
+    - role: nodejs
+      tags:
+        - nodejs

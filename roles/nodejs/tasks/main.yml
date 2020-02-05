@@ -1,0 +1,44 @@
+---
+###############################################################################
+# NodeJS installation
+
+- name: NodeJS | Installs dependencies | apt
+  become: yes
+  become_user: root
+  loop: "{{ dependencies }}"
+  apt:
+    name: "{{ item }}"
+    state: present
+
+- name: NodeJS | Installs NodeJS plugin | command
+  command: "{{ asdf_bin }} plugin-add nodejs"
+  register: nodejs_add
+  failed_when: nodejs_add.rc == 1
+
+- name: NodeJS | Creates GNUPGHOME folder | command
+  file:
+    path: "{{ asdf_dir }}/keyrings/nodejs"
+    state: directory
+    mode: '0700'
+
+- name: NodeJS | Imports release tem keyring | shell
+  shell: "{{ asdf_dir }}/plugins/nodejs/bin/import-release-team-keyring"
+  environment:
+    GNUPGHOME: "{{ asdf_dir }}/keyrings/nodejs"
+
+- name: NodeJS | Installs NodeJS versions | shell
+  shell: "source {{ asdf_dir }}/asdf.sh && asdf install nodejs {{ item }}"
+  args:
+    executable: /bin/zsh
+  loop: "{{ nodejs_versions }}"
+  environment:
+    GNUPGHOME: "{{ asdf_dir }}/keyrings/nodejs"
+    NODEJS_CHECK_SIGNATURES: "yes"
+
+- name: NodeJS | Sets default NodeJS version | command
+  shell: "source {{ asdf_dir}}/asdf.sh && asdf global nodejs {{ nodejs_versions[0] }}"
+  args:
+    executable: /bin/zsh
+  environment:
+    GNUPGHOME: "{{ asdf_dir }}/keyrings/nodejs"
+    NODEJS_CHECK_SIGNATURES: "yes"

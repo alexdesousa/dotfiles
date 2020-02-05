@@ -1,0 +1,28 @@
+---
+###############################################################################
+# Vim installation
+
+- name: VIm | Installs VIm | apt
+  become: yes
+  become_user: root
+  apt:
+    name: vim
+    state: present
+
+- name: VIm | Links .vimrc file | file
+  file:
+    src: "{{ dotfiles_home }}/roles/vim/files/vimrc.link"
+    dest: "{{ dotfiles_user_home }}/.vimrc"
+    state: link
+    force: yes
+
+- name: VIm | Installs Vundle | git
+  git:
+    repo: "https://github.com/VundleVim/Vundle.vim.git"
+    dest: "{{ dotfiles_user_home }}/.vim/bundle/Vundle.vim"
+    clone: yes
+    update: yes
+    force: yes
+
+- name: VIm | Installs plugins | command
+  command: vim +PluginInstall +qall

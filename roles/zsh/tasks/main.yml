@@ -1,0 +1,48 @@
+---
+###############################################################################
+# Zsh installation
+
+- name: zsh | Installs zsh | apt
+  become: yes
+  become_user: root
+  apt:
+    name: zsh
+    state: present
+
+- name: zsh | Sets zsh as default shell for root | command
+  become: yes
+  become_user: root
+  command: chsh -s /bin/zsh
+  register: zsh_for_root
+  failed_when: zsh_for_root.rc >= 1
+  changed_when: zsh_for_root.rc == 0
+
+- name: zsh | Sets zsh as default shell for {{ dotfiles_user }} | command
+  become: yes
+  become_user: root
+  command: chsh -s /bin/zsh {{ dotfiles_user }}
+  register: zsh_for_user
+  failed_when: zsh_for_user.rc >= 1
+  changed_when: zsh_for_user.rc == 0
+
+- name: zsh | Checks for oh-my-zsh installation | stat
+  stat:
+    path: "{{ dotfiles_user_home }}/.oh-my-zsh"
+  register: oh_my_zsh_stat
+
+- name: zsh | Installs oh-my-zsh | raw
+  raw: 'sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"'
+  when: not oh_my_zsh_stat.stat.exists
+
+- name: zsh | Copies .zshrc | template
+  template:
+    src: "zshrc.j2"
+    dest: "{{ dotfiles_user_home }}/.zshrc"
+
+- name: zsh | Installs hab | git
+  git:
+    repo: "https://github.com/alexdesousa/hab.git"
+    dest: "{{ dotfiles_user_home }}/.oh-my-zsh/custom/plugins/hab"
+    clone: yes
+    update: yes
+    force: yes
