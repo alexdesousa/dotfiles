@@ -1,0 +1,12 @@
+---
+###############################################################################
+# ASDF installation
+
+- name: ASDF | Installs ASDF | git
+  git:
+    repo: "https://github.com/asdf-vm/asdf.git"
+    dest: "{{ dotfiles_user_home }}/.asdf"
+    version: "v{{ asdf_version }}"
+    clone: yes
+    update: yes
+    force: yes

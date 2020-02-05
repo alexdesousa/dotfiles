@@ -1,0 +1,95 @@
+set nocompatible              " be iMproved, required
+filetype off                  " required
+
+" set fzf
+source /usr/share/doc/fzf/examples/fzf.vim
+
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+
+" let Vundle manage Vundle, required
+Plugin 'VundleVim/Vundle.vim'
+
+" elixir syntax highlight
+Plugin 'elixir-editors/vim-elixir'
+
+" dart syntax highlight
+Plugin 'dart-lang/dart-vim-plugin'
+
+" Solidity
+Plugin 'tomlion/vim-solidity'
+
+" Airline.
+Plugin 'vim-airline/vim-airline'
+
+" Airline themes.
+Plugin 'vim-airline/vim-airline-themes'
+
+" CtrlP
+Plugin 'ctrlpvim/ctrlp.vim'
+
+" Vim Fugitive
+Plugin 'tpope/vim-fugitive'
+
+" fzf
+Plugin 'junegunn/fzf.vim'
+
+call vundle#end()            " required
+filetype plugin indent on    " required
+
+set laststatus=2
+set timeoutlen=50
+set t_Co=256
+let g:airline_theme='jellybeans'
+let g:airline_powerline_fonts=1
+
+set background=dark
+set encoding=utf-8
+set fileencoding=utf-8
+
+set colorcolumn=80
+set number
+syntax on
+set showcmd
+set textwidth=79
+set shiftwidth=2
+set tabstop=2
+set expandtab
+set softtabstop=2
+set shiftround
+set autoindent
+hi Visual term=reverse cterm=reverse guibg=Grey
+
+" setting tab number to the tab's name
+fu! MyTabLabel(n)
+    let buflist = tabpagebuflist(a:n)
+    let winnr = tabpagewinnr(a:n)
+    " Get buffername
+    let string = fnamemodify(bufname(buflist[winnr - 1]), ':t')
+    let bufdirty = getbufvar(buflist[winnr - 1], "&mod")?'+':''
+    return bufdirty.(empty(string) ? '[unnamed]' : string)
+endfu
+
+fu! MyTabLine()
+    let s = ''
+    for i in range(tabpagenr('$'))
+    " select the highlighting
+        if i + 1 == tabpagenr()
+            let s .= '%#TabLineSel#'
+        else
+            let s .= '%#TabLine#'
+        endif
+
+        let s .= ' '. (i+1) . ' '
+        let s .= '%{MyTabLabel(' . (i + 1) . ')} '
+
+        if i+1 < tabpagenr('$')
+            let s .= ' |'
+        endif
+    endfor
+    return s
+endfu
+
+set tabline=%!MyTabLine()
+hi TabLineSel term=bold cterm=bold ctermfg=Green

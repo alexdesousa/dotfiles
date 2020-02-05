@@ -1,0 +1,12 @@
+dependencies:
+  - apt-transport-https
+  - ca-certificates
+  - gnupg2
+  - software-properties-common
+
+repository: "deb [arch=amd64] https://download.docker.com/linux/debian buster stable"
+
+packages:
+  - docker-ce
+  - docker-ce-cli
+  - containerd.io

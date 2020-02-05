@@ -1,0 +1,22 @@
+---
+###############################################################################
+# Git installation
+
+- name: Git | Installs git | apt
+  become: yes
+  become_user: root
+  apt:
+    name: git
+    state: present
+
+- name: Git | Links global gitignore file | file
+  file:
+    src: "{{ dotfiles_home }}/roles/git/files/gitignore_global.link"
+    dest: "{{ dotfiles_user_home }}/.gitignore_global"
+    state: link
+    force: yes
+
+- name: Git | Copies git config | template
+  template:
+    src: "gitconfig.j2"
+    dest: "{{ dotfiles_user_home }}/.gitconfig"

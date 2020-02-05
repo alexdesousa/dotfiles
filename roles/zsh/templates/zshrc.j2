@@ -1,0 +1,26 @@
+###############################################################################
+# BEGIN: Base
+
+export ZSH=/home/etadel2/.oh-my-zsh
+
+ZSH_THEME="candy"
+
+plugins=(
+  git
+  hab
+)
+
+source $ZSH/oh-my-zsh.sh
+
+# END: Base
+###############################################################################
+
+source {{ dotfiles_home }}/roles/zsh/files/aliases.zsh
+source {{ dotfiles_home }}/roles/asdf/files/asdf.zsh
+source {{ dotfiles_home }}/roles/erlang/files/erlang.zsh
+source {{ dotfiles_home }}/roles/docker/files/docker.zsh
+source {{ dotfiles_home }}/roles/fzf/files/fzf.zsh
+source {{ dotfiles_home }}/roles/flutter/files/flutter.zsh
+source {{ dotfiles_home }}/roles/microsoft/files/microsoft.zsh
+
+export PATH="/home/etadel2/.asdf/installs/nodejs/10.0.0/.npm/bin:$PATH"

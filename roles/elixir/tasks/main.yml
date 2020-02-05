@@ -1,0 +1,15 @@
+---
+###############################################################################
+# Elixir installation
+
+- name: Elixir | Installs Elixir plugin | command
+  command: "{{ asdf_bin }} plugin-add elixir"
+  register: elixir_add
+  failed_when: elixir_add.rc == 1
+
+- name: Elixir | Installs Elixir versions | command
+  command: "{{ asdf_bin }} install elixir {{ item }}"
+  loop: "{{ elixir_versions }}"
+
+- name: Elixir | Sets default Elixir version | command
+  command: "{{ asdf_bin }} global elixir {{ elixir_versions[0] }}"

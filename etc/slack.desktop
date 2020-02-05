@@ -1,9 +1,0 @@
-#!/usr/bin/env xdg-open
-
-[Desktop Entry]
-Name=Slack
-Comment=Slack Desktop
-Exec=/usr/bin/slack %U
-Icon=/usr/share/pixmaps/slack.png
-Type=Application
-StartupNotify=true

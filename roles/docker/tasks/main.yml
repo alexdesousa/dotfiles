@@ -1,0 +1,44 @@
+---
+###############################################################################
+# Docker installation
+
+- name: Docker | Gets docker dependencies | apt
+  become: yes
+  become_user: root
+  loop: "{{ dependencies }}"
+  apt:
+    name: "{{ item }}"
+    state: present
+
+- name: Docker | Gets APT key for docker | apt_key
+  become: yes
+  become_user: root
+  apt_key:
+    url: https://download.docker.com/linux/debian/gpg
+    state: present
+
+- name: Docker | Updates repositories | apt_repository
+  become: yes
+  become_user: root
+  apt_repository:
+    repo: "{{ repository }}"
+    state: present
+    filename: docker
+
+- name: Docker | Installs docker | apt
+  become: yes
+  become_user: root
+  loop: "{{ packages }}"
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+
+- name: Docker | Installs docker-compose | get_url
+  become: yes
+  become_user: root
+  get_url:
+    url: "https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-Linux-x86_64"
+    dest: /usr/local/bin/docker-compose
+    force: yes
+    mode: '0755'

@@ -1,0 +1,18 @@
+---
+###############################################################################
+# Tmux installation
+
+- name: Tmux | Installs tmux | apt
+  become: yes
+  become_user: root
+  apt:
+    name: tmux
+    state: present
+
+- name: Tmux | Links .tmux.conf file | file
+  file:
+    src: "{{ dotfiles_home }}/roles/tmux/files/tmux.conf.link"
+    dest: "{{ dotfiles_user_home }}/.tmux.conf"
+    state: link
+    force: yes
+
