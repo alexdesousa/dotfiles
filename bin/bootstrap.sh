@@ -80,6 +80,11 @@ then
   __bootstrap_usage 1 "Cannot find variable DOTFILES_BOOTSTRAP_GIT_EMAIL"
 fi
 
+if [ -z "$TAG" ]
+then
+  TAG="all"
+fi
+
 DOTFILES_BOOTSTRAP_ROOT="$ROOTDIR"
 DOTFILES_BOOTSTRAP_USER_HOME=$(
   getent passwd "$DOTFILES_BOOTSTRAP_USER" |
