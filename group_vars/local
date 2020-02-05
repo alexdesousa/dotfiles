@@ -11,7 +11,7 @@ asdf_bin: "{{ asdf_dir }}/bin/asdf"
 
 bat_version: 0.12.1
 asdf_version: 0.7.6
-docker_compose_version: 1.25.3
+docker_compose_version: 1.25.4
 
 erlang_versions:
   - 22.0.7
