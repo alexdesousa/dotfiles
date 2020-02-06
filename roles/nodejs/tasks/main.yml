@@ -47,3 +47,8 @@
   shell: "source {{ asdf_src }} && asdf reshim nodejs"
   args:
     executable: /bin/zsh
+
+- name: NodeJS | Update NPM | shell
+  shell: "source {{ asdf_src }} && npm install npm@latest -g"
+  args:
+    executable: /bin/zsh
