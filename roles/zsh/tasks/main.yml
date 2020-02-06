@@ -46,3 +46,11 @@
     clone: yes
     update: yes
     force: yes
+
+- name: zsh | Installs oath | git
+  git:
+    repo: "https://github.com/alexdesousa/oath.git"
+    dest: "{{ dotfiles_user_home }}/.oh-my-zsh/custom/plugins/oath"
+    clone: yes
+    update: yes
+    force: yes

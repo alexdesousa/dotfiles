@@ -8,12 +8,25 @@ ZSH_THEME="candy"
 plugins=(
   git
   hab
+  oath
 )
 
 source $ZSH/oh-my-zsh.sh
 
 # END: Base
 ###############################################################################
+
+###############################################################################
+# BEGIN: Oath
+
+export OATH_KEY="{{ zsh_oath_key }}"
+export OATH_EMAIL="{{ zsh_oath_email }}"
+
+# END: Oath
+###############################################################################
+
+###############################################################################
+# BEGIN: Others
 
 source {{ dotfiles_home }}/roles/zsh/files/aliases.zsh
 source {{ dotfiles_home }}/roles/asdf/files/asdf.zsh
@@ -22,3 +35,6 @@ source {{ dotfiles_home }}/roles/docker/files/docker.zsh
 source {{ dotfiles_home }}/roles/fzf/files/fzf.zsh
 source {{ dotfiles_home }}/roles/flutter/files/flutter.zsh
 source {{ dotfiles_home }}/roles/microsoft/files/microsoft.zsh
+
+# END: Others
+###############################################################################

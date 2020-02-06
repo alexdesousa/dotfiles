@@ -22,6 +22,8 @@ root of this project.
 export DOTFILES_BOOTSTRAP_USER="<OS username>"
 export DOTFILES_BOOTSTRAP_GIT_NAME="<Git name>"
 export DOTFILES_BOOTSTRAP_GIT_EMAIL="<Git email>"
+export DOTFILES_BOOTSTRAP_ZSH_OATH_KEY="<Oath key>"
+export DOTFILES_BOOTSTRAP_ZSH_OATH_EMAIL="<Oath email>"
 ```
 
 > **NOTE**: The reason for not having defaults for these variables is to avoid
@@ -71,7 +73,11 @@ Relevant files:
 
 ## ZSH Role
 
-Installs and configures ZSH with `oh-my-zsh`.
+Installs and configures ZSH with `oh-my-zsh`. For using
+[oath zsh plugin](https://github.com/alexdesousa/oath) these variables are needed:
+
+- `$DOTFILES_BOOTSTRAP_ZSH_OATH_KEY_`: Oath key.
+- `$DOTFILES_BOOTSTRAP_ZSH_OATH_EMAIL`: Oath email.
 
 Relevant files:
 
