@@ -1,3 +1,8 @@
-dependencies:
+nodejs_dependencies:
   - dirmngr
   - gpg
+
+nodejs_versions:
+  - 12.14.1
+
+nodejs_gnupghome: "{{ asdf_dir }}/keyrings/nodejs"

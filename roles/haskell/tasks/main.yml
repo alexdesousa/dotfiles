@@ -1,0 +1,20 @@
+---
+###############################################################################
+# Haskell installation
+
+- name: Haskell | Installs Haskell plugin | command
+  command: "{{ asdf_bin }} plugin-add haskell https://github.com/vic/asdf-haskell.git"
+  register: haskell_add
+  failed_when: haskell_add.rc == 1
+
+- name: Haskell | Installs Haskell versions | command
+  command: "{{ asdf_bin }} install haskell {{ item }}"
+  loop: "{{ haskell_versions }}"
+
+- name: Haskell | Sets default Haskell version | command
+  command: "{{ asdf_bin }} global haskell {{ haskell_versions[0] }}"
+
+- name: Haskell | Reshims Haskell | shell
+  shell: "source {{ asdf_src }} && asdf reshim haskell"
+  args:
+    executable: /bin/zsh

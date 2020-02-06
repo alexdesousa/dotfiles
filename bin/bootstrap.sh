@@ -9,6 +9,7 @@ ROOTDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 DOTFILES_VARS="$ROOTDIR/.envrc"
 DOTFILES_HOSTS="$ROOTDIR/hosts"
 DOTFILES_PLAYBOOK="$ROOTDIR/dotfiles.yml"
+DOTFILES_CUSTOM_CONFIG="$ROOTDIR/vars/custom.yml"
 
 ###########
 # Functions
@@ -41,6 +42,9 @@ function __bootstrap_usage {
     DOTFILES_BOOTSTRAP_USER      - Linux user.
     DOTFILES_BOOTSTRAP_GIT_NAME  - Git user name.
     DOTFILES_BOOTSTRAP_GIT_EMAIL - Git user e-mail.
+
+  Tags:
+    $(ls "$ROOTDIR/roles" | tr "\n" " ")
   "
 
   exit "$1"
@@ -65,24 +69,27 @@ done
 
 source "$DOTFILES_VARS" 2> /dev/null
 
+if [ -z "$TAG" ]
+then
+  TAG="all"
+fi
+
 if [ -z "$DOTFILES_BOOTSTRAP_USER" ]
 then
   __bootstrap_usage 1 "Cannot find variable DOTFILES_BOOTSTRAP_USER"
 fi
 
-if [ -z "$DOTFILES_BOOTSTRAP_GIT_NAME" ]
+if [ "$TAG" = "all" ] || [ "$TAG" = "git" ]
 then
-  __bootstrap_usage 1 "Cannot find variable DOTFILES_BOOTSTRAP_GIT_NAME"
-fi
+  if [ -z "$DOTFILES_BOOTSTRAP_GIT_NAME" ]
+  then
+    __bootstrap_usage 1 "Cannot find variable DOTFILES_BOOTSTRAP_GIT_NAME"
+  fi
 
-if [ -z "$DOTFILES_BOOTSTRAP_GIT_EMAIL" ]
-then
-  __bootstrap_usage 1 "Cannot find variable DOTFILES_BOOTSTRAP_GIT_EMAIL"
-fi
-
-if [ -z "$TAG" ]
-then
-  TAG="all"
+  if [ -z "$DOTFILES_BOOTSTRAP_GIT_EMAIL" ]
+  then
+    __bootstrap_usage 1 "Cannot find variable DOTFILES_BOOTSTRAP_GIT_EMAIL"
+  fi
 fi
 
 DOTFILES_BOOTSTRAP_ROOT="$ROOTDIR"
@@ -97,6 +104,12 @@ DOTFILES_BOOTSTRAP_USER_HOME=$(
 apt-get update && apt-get install -y sudo ansible
 
 adduser "$DOTFILES_BOOTSTRAP_USER" sudo
+
+if [ ! -f "$DOTFILES_CUSTOM_CONFIG" ]
+then
+  sudo -u "$DOTFILES_BOOTSTRAP_USER" \
+    echo "---" > "$DOTFILES_CUSTOM_CONFIG"
+fi
 
 sudo -u "$DOTFILES_BOOTSTRAP_USER" \
   DOTFILES_BOOTSTRAP_ROOT="$DOTFILES_BOOTSTRAP_ROOT" \

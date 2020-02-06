@@ -1,5 +1,7 @@
 - name: Set up local workstation
   hosts: local
+  vars_files:
+    - ./vars/custom.yml
   roles:
     - role: base
       tags:
@@ -19,12 +21,12 @@
     - role: vim
       tags:
         - vim
-    - role: asdf
-      tags:
-        - asdf
     - role: docker
       tags:
         - docker
+    - role: asdf
+      tags:
+        - asdf
     - role: erlang
       tags:
         - erlang
@@ -34,3 +36,6 @@
     - role: nodejs
       tags:
         - nodejs
+    - role: haskell
+      tags:
+        - haskell

@@ -1,0 +1,5 @@
+asdf_version: 0.7.6
+
+asdf_dir: "{{ dotfiles_user_home }}/.asdf"
+asdf_bin: "{{ asdf_dir }}/bin/asdf"
+asdf_src: "{{ asdf_dir}}/asdf.sh"
