@@ -1,4 +1,4 @@
-dependencies:
+erlang_dependencies:
   - build-essential
   - autoconf
   - m4
@@ -11,3 +11,6 @@ dependencies:
   - unixodbc-dev
   - xsltproc
   - fop
+
+erlang_versions:
+  - 22.2.6

@@ -5,7 +5,7 @@
 - name: Docker | Gets docker dependencies | apt
   become: yes
   become_user: root
-  loop: "{{ dependencies }}"
+  loop: "{{ docker_dependencies }}"
   apt:
     name: "{{ item }}"
     state: present
@@ -14,21 +14,21 @@
   become: yes
   become_user: root
   apt_key:
-    url: https://download.docker.com/linux/debian/gpg
+    url: "https://download.docker.com/linux/debian/gpg"
     state: present
 
 - name: Docker | Updates repositories | apt_repository
   become: yes
   become_user: root
   apt_repository:
-    repo: "{{ repository }}"
+    repo: "{{ docker_repository }}"
     state: present
     filename: docker
 
 - name: Docker | Installs docker | apt
   become: yes
   become_user: root
-  loop: "{{ packages }}"
+  loop: "{{ docker_packages }}"
   apt:
     name: "{{ item }}"
     state: present

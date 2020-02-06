@@ -2,7 +2,7 @@
 ###############################################################################
 # ASDF installation
 
-- name: ASDF | Installs ASDF | git
+- name: asdf | Installs asdf | git
   git:
     repo: "https://github.com/asdf-vm/asdf.git"
     dest: "{{ dotfiles_user_home }}/.asdf"

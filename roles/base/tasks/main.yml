@@ -5,7 +5,7 @@
 - name: Base | Updates repositories | apt_repository
   become: yes
   become_user: root
-  loop: "{{ repositories }}"
+  loop: "{{ base_repositories }}"
   apt_repository:
     repo: "{{ item }}"
     state: present
@@ -28,7 +28,7 @@
 - name: Base | Installs packages | apt
   become: yes
   become_user: root
-  loop: "{{ packages }}"
+  loop: "{{ base_packages }}"
   apt:
     name: "{{ item }}"
     state: present
