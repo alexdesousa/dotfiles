@@ -20,6 +20,15 @@ source $ZSH/oh-my-zsh.sh
 ###############################################################################
 
 ###############################################################################
+# BEGIN: ASDF
+
+. $HOME/.asdf/asdf.sh
+. $HOME/.asdf/completions/asdf.bash
+
+# END: ASDF
+###############################################################################
+
+###############################################################################
 # BEGIN: Oath
 
 export OATH_KEY="{{ zsh_oath_key }}"
@@ -32,7 +41,6 @@ export OATH_EMAIL="{{ zsh_oath_email }}"
 # BEGIN: Others
 
 source {{ dotfiles_home }}/roles/zsh/files/aliases.zsh
-source {{ dotfiles_home }}/roles/asdf/files/asdf.zsh
 source {{ dotfiles_home }}/roles/erlang/files/erlang.zsh
 source {{ dotfiles_home }}/roles/docker/files/docker.zsh
 source {{ dotfiles_home }}/roles/fzf/files/fzf.zsh

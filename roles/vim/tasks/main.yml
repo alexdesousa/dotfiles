@@ -26,3 +26,43 @@
 
 - name: VIm | Installs plugins | command
   command: vim +PluginInstall +qall
+
+- name: VIm | Clones Elixir LS | git
+  git:
+    repo: "https://github.com/elixir-lsp/elixir-ls.git"
+    dest: "{{ dotfiles_user_home }}/.vim/LS/elixir-ls"
+    clone: yes
+    update: yes
+    force: yes
+
+- name: VIm | Installs Elixir and Erlang for LS | shell
+  shell: "source {{ asdf_src }} && cd {{ dotfiles_user_home }}/.vim/LS/elixir-ls && asdf install"
+  args:
+    executable: /bin/zsh
+
+- name: VIm | Install hex for Elixir LS | shell
+  shell: "source {{ asdf_src }} && cd {{ dotfiles_user_home }}/.vim/LS/elixir-ls && mix local.hex --force"
+  args:
+    executable: /bin/zsh
+
+- name: VIm | Install rebar for Elixir LS | shell
+  shell: "source {{ asdf_src }} && cd {{ dotfiles_user_home }}/.vim/LS/elixir-ls && mix local.rebar --force"
+  args:
+    executable: /bin/zsh
+
+- name: VIm | Get dependencies for Elixir LS | shell
+  shell: "source {{ asdf_src }} && cd {{ dotfiles_user_home }}/.vim/LS/elixir-ls && mix deps.get"
+  args:
+    executable: /bin/zsh
+
+- name: VIm | Compile Elixir LS | shell
+  shell: "source {{ asdf_src }} && cd {{ dotfiles_user_home }}/.vim/LS/elixir-ls && mix compile"
+  args:
+    executable: /bin/zsh
+
+- name: VIm | Compile Elixir LS | shell
+  shell: "source {{ asdf_src }} && cd {{ dotfiles_user_home }}/.vim/LS/elixir-ls && mix elixir_ls.release"
+  args:
+    executable: /bin/zsh
+  environment:
+    MIX_ENV: "prod"

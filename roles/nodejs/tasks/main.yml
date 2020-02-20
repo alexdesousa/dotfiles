@@ -27,7 +27,7 @@
     GNUPGHOME: "{{ nodejs_gnupghome }}"
 
 - name: NodeJS | Installs NodeJS versions | shell
-  shell: "source {{ asdf_src }}&& asdf install nodejs {{ item }}"
+  shell: "source {{ asdf_src }} && asdf install nodejs {{ item }}"
   args:
     executable: /bin/zsh
   loop: "{{ nodejs_versions }}"

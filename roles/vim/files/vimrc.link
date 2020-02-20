@@ -35,6 +35,9 @@ Plugin 'tpope/vim-fugitive'
 " fzf
 Plugin 'junegunn/fzf.vim'
 
+" ale
+Plugin 'dense-analysis/ale'
+
 call vundle#end()            " required
 filetype plugin indent on    " required
 
@@ -93,3 +96,24 @@ endfu
 
 set tabline=%!MyTabLine()
 hi TabLineSel term=bold cterm=bold ctermfg=Green
+
+" setting ALE
+let mapleader = ','
+let g:ale_linters = {'elixir': ['elixir-ls'],}
+let g:ale_fixers = {'elixir': ['mix_format'],}
+let g:ale_elixir_elixir_ls_release='~/.vim/LS/elixir-ls/release'
+
+let g:ale_completion_enabled = 1
+let g:ale_sign_error = '✘'
+let g:ale_sign_warning = '⚠'
+let g:ale_lint_on_enter = 0
+let g:ale_lint_on_text_changed = 'never'
+highlight ALEErrorSign ctermbg=NONE ctermfg=red
+highlight ALEWarningSign ctermbg=NONE ctermfg=yellow
+let g:ale_linters_explicit = 1
+let g:ale_lint_on_save = 1
+let g:ale_fix_on_save = 1
+
+noremap <Leader>ad :ALEGoToDefinition<CR>
+nnoremap <leader>af :ALEFix<cr>
+noremap <Leader>ar :ALEFindReferences<CR>
