@@ -108,14 +108,6 @@ Installs and configures FZF with `fd` and `bat` support. The available
 
 - `fzf_bat_version`: `bat` version to be used.
 
-## VIm Role
-
-Installs and configures VIm and its plugins.
-
-Relevant files:
-
-- `roles/vim/files/vimrc.link`: File for VIm configuration.
-
 ## Docker Role
 
 Installs and configures docker. The available `vars/custom.yml` overrides are:
@@ -164,6 +156,15 @@ Instals and configures NodeJS. The available `vars/custom.yml` overrides are:
 Installs and configures Haskell. The available `vars/custom.yml` overrides are:
 
 - `haskell_versions`: Haskell versions to be used.
+
+## NeoVIm Role
+
+Installs and configures Neovim and its plugins.
+
+Relevant files:
+
+- `roles/neovim/files/init.vim.link`: File for Neovim configuration.
+- `roles/neovim/files/tabs.vim.link`: File for tab numbers.
 
 ## Author
 

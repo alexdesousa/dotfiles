@@ -2,6 +2,7 @@
 # BEGIN: Aliases
 
 alias open="xdg-open"
+alias vim="nvim"
 
 # END: Aliases
 ###############################################################################

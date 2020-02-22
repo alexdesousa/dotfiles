@@ -1,0 +1,1 @@
+neovim_home: "{{ dotfiles_user_home }}/.config/nvim"

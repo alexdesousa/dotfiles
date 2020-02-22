@@ -1,0 +1,83 @@
+""""""""""""""
+" Basic config
+
+set nocompatible            " disable compatibility to old-time vi
+set showmatch               " show matching brackets.
+set hlsearch                " highlight search results
+set tabstop=2               " number of columns occupied by a tab character
+set softtabstop=2           " see multiple spaces as tabstops so <BS> does the right thing
+set expandtab               " converts tabs to white space
+set shiftwidth=2            " width for autoindents
+set autoindent              " indent a new line the same amount as the line just typed
+set number                  " add line numbers
+set wildmode=longest,list   " get bash-like tab completions
+set colorcolumn=80          " set an 80 column border
+set textwidth=79            " text width
+set encoding=utf-8          " Encoding UTF-8
+set fileencoding=utf-8      " File encoding UTF-8
+syntax on                   " syntax highlighting
+
+""""""""""""""""
+" Set tab number
+
+set rtp+=~/.config/nvim/tabs.vim
+
+"""""""""""
+" Loads FZF
+
+set rtp+=/usr/share/doc/fzf/examples/fzf.vim
+
+"""""""""""""
+" Load Vundle
+
+set rtp+=~/.config/nvim/bundle/Vundle.vim
+
+""""""""""""""""""""""""
+" Declare Vundle plugins
+
+filetype off
+call vundle#begin()
+
+Plugin 'VundleVim/Vundle.vim'            " let Vundle manage Vundle
+Plugin 'elixir-editors/vim-elixir'       " Elixir syntax highlighting
+Plugin 'dart-lang/dart-vim-plugin'       " Dart syntax highlighting
+Plugin 'tomlion/vim-solidity'            " Solidity syntax highlighting
+Plugin 'vim-airline/vim-airline'         " VIm airline status bar
+Plugin 'vim-airline/vim-airline-themes'  " VIm airline themes
+Plugin 'tpope/vim-fugitive'              " Git command wrapper
+Plugin 'dense-analysis/ale'              " Formatter and linter
+
+call vundle#end()
+filetype plugin indent on   " allows auto-indenting depending on file type
+
+""""""""""""""""""""
+" VIm Airline config
+
+let laststatus=2
+let g:airline_theme='jellybeans'
+let g:airline_powerline_fonts=1
+
+""""""""""""
+" ALE config
+
+let g:ale_fixers = {'elixir': ['mix_format'],}
+let g:ale_fix_on_save = 1
+
+let g:ale_linters = {'elixir': ['elixir-ls'],}
+let g:ale_elixir_elixir_ls_release='~/.config/nvim/LS/elixir-ls/release'
+let g:ale_linters_explicit = 1
+let g:ale_lint_on_save = 1
+let g:ale_lint_on_enter = 0
+let g:ale_lint_on_text_changed = 'always'
+
+let g:ale_completion_enabled = 1
+let g:ale_sign_error = '✘'
+let g:ale_sign_warning = '⚠'
+
+highlight ALEErrorSign ctermbg=NONE ctermfg=red
+highlight ALEWarningSign ctermbg=NONE ctermfg=yellow
+
+let mapleader = '-'
+noremap <Leader>ad :ALEGoToDefinition<CR>
+nnoremap <Leader>af :ALEFix<cr>
+noremap <Leader>ar :ALEFindReferences<CR>
