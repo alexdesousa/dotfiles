@@ -20,12 +20,12 @@ syntax on                   " syntax highlighting
 """"""""""""""""
 " Set tab number
 
-set rtp+=~/.config/nvim/tabs.vim
+source ~/.config/nvim/tabs.vim
 
-"""""""""""
-" Loads FZF
+""""""""""
+" Load FZF
 
-set rtp+=/usr/share/doc/fzf/examples/fzf.vim
+source /usr/share/doc/fzf/examples/fzf.vim
 
 """""""""""""
 " Load Vundle
@@ -36,7 +36,7 @@ set rtp+=~/.config/nvim/bundle/Vundle.vim
 " Declare Vundle plugins
 
 filetype off
-call vundle#begin()
+call vundle#begin('~/.config/nvim/plugins')
 
 Plugin 'VundleVim/Vundle.vim'            " let Vundle manage Vundle
 Plugin 'elixir-editors/vim-elixir'       " Elixir syntax highlighting
@@ -45,10 +45,17 @@ Plugin 'tomlion/vim-solidity'            " Solidity syntax highlighting
 Plugin 'vim-airline/vim-airline'         " VIm airline status bar
 Plugin 'vim-airline/vim-airline-themes'  " VIm airline themes
 Plugin 'tpope/vim-fugitive'              " Git command wrapper
+Plugin 'junegunn/fzf.vim'                " FZF support.
 Plugin 'dense-analysis/ale'              " Formatter and linter
 
 call vundle#end()
 filetype plugin indent on   " allows auto-indenting depending on file type
+
+""""""""""""
+" FZF config
+
+let mapleader = '-'
+noremap <Leader>ff :FZF<CR>
 
 """"""""""""""""""""
 " VIm Airline config
