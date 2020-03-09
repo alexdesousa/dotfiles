@@ -18,3 +18,4 @@ base_packages:
   - gnupg2
   - software-properties-common
   - guake
+  - postgresql-client

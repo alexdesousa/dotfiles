@@ -22,6 +22,11 @@ syntax on                   " syntax highlighting
 
 source ~/.config/nvim/tabs.vim
 
+"""""""""""""""""""""""""""
+" Set mkdir on save autocmd
+
+source ~/.config/nvim/mkdir.vim
+
 """"""""""
 " Load FZF
 
