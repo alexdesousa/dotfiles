@@ -32,29 +32,50 @@ source ~/.config/nvim/mkdir.vim
 
 source /usr/share/doc/fzf/examples/fzf.vim
 
-"""""""""""""
-" Load Vundle
+"""""""""""""""
+" Load vim-plug
 
-set rtp+=~/.config/nvim/bundle/Vundle.vim
+set rtp+=~/.config/nvim/bootstrap/vim-plug/plug.vim
+
+""""""""""""""""""""""""""
+" Declare vim-plug plugins
+
+call plug#begin('~/.config/nvim/plugged')
+
+  Plug 'vim-airline/vim-airline'                  " VIm airline status bar
+  Plug 'vim-airline/vim-airline-themes'           " VIm airline themes
+  Plug 'tpope/vim-fugitive'                       " Git command wrapper
+  Plug 'junegunn/fzf.vim'                         " FZF support.
+  Plug 'neoclide/coc.nvim', {'branch': 'release'} " Coc plugin
+
+  Plug 'dart-lang/dart-vim-plugin'                " Dart syntax highlighting
+  Plug 'tomlion/vim-solidity'                     " Solidity syntax highlighting
+
+  Plug 'elixir-editors/vim-elixir'                " Elixir syntax highlighting
+
+  " Custom plugins
+  Plug 'elixir-lsp/elixir-ls', { 'do': { -> g:ElixirLS.compile() } }
+
+call plug#end()
 
 """"""""""""""""""""""""
-" Declare Vundle plugins
+" Elixir Language Server
 
-filetype off
-call vundle#begin('~/.config/nvim/plugins')
+source ~/.config/nvim/elixir-ls.vim
 
-Plugin 'VundleVim/Vundle.vim'            " let Vundle manage Vundle
-Plugin 'elixir-editors/vim-elixir'       " Elixir syntax highlighting
-Plugin 'dart-lang/dart-vim-plugin'       " Dart syntax highlighting
-Plugin 'tomlion/vim-solidity'            " Solidity syntax highlighting
-Plugin 'vim-airline/vim-airline'         " VIm airline status bar
-Plugin 'vim-airline/vim-airline-themes'  " VIm airline themes
-Plugin 'tpope/vim-fugitive'              " Git command wrapper
-Plugin 'junegunn/fzf.vim'                " FZF support.
-Plugin 'dense-analysis/ale'              " Formatter and linter
+""""""""""""
+" Coc config
 
-call vundle#end()
-filetype plugin indent on   " allows auto-indenting depending on file type
+let g:coc_global_extensions = [
+  \ 'coc-tsserver',
+  \ 'coc-eslint',
+  \ 'coc-json',
+  \ 'coc-prettier',
+  \ 'coc-css',
+  \ 'coc-tailwindcss',
+  \ 'coc-elixir',
+  \ 'coc-diagnostic'
+  \ ]
 
 """"""""""""
 " FZF config
@@ -68,28 +89,3 @@ noremap <Leader>ff :FZF<CR>
 let laststatus=2
 let g:airline_theme='jellybeans'
 let g:airline_powerline_fonts=1
-
-""""""""""""
-" ALE config
-
-let g:ale_fixers = {'elixir': ['mix_format'],}
-let g:ale_fix_on_save = 1
-
-let g:ale_linters = {'elixir': ['elixir-ls'],}
-let g:ale_elixir_elixir_ls_release='~/.config/nvim/LS/elixir-ls/release'
-let g:ale_linters_explicit = 1
-let g:ale_lint_on_save = 1
-let g:ale_lint_on_enter = 0
-let g:ale_lint_on_text_changed = 'always'
-
-let g:ale_completion_enabled = 1
-let g:ale_sign_error = '✘'
-let g:ale_sign_warning = '⚠'
-
-highlight ALEErrorSign ctermbg=NONE ctermfg=red
-highlight ALEWarningSign ctermbg=NONE ctermfg=yellow
-
-let mapleader = '-'
-noremap <Leader>ad :ALEGoToDefinition<CR>
-nnoremap <Leader>af :ALEFix<cr>
-noremap <Leader>ar :ALEFindReferences<CR>

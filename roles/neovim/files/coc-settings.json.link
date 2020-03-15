@@ -1,0 +1,17 @@
+{
+  "codeLens.enable": true,
+  "coc.preferences.formatOnSaveFiletypes": ["css", "elixir", "eelixir"],
+  "diagnostic-languageserver.filetypes": {
+    "elixir": ["mix_credo", "mix_credo_compile"],
+    "eelixir": ["mix_credo", "mix_credo_compile"]
+  },
+  "diagnostic-languageserver.formatFiletypes": {
+    "elixir": "mix_format",
+    "eelixir": "mix_format"
+  },
+  "elixir": {
+    "command": "~/.config/nvim/plugged/elixir-ls/release/language_server.sh",
+    "filetypes": ["elixir", "eelixir"]
+  },
+  "elixir.pathToElixirLS": "~/.config/nvim/plugged/elixir-ls/release/language_server.sh"
+}
