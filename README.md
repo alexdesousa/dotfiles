@@ -164,7 +164,13 @@ Installs and configures Neovim and its plugins.
 Relevant files:
 
 - `roles/neovim/files/init.vim.link`: File for Neovim configuration.
-- `roles/neovim/files/tabs.vim.link`: File for tab numbers.
+- `roles/neovim/files/tabs.vim.link`: Tab numbers configuration.
+- `roles/neovim/files/mkdir.vim.link`: Automatically creates directories on
+  file creation when they don't exist.
+- `roles/neovim/files/elixir-ls.vim.link`: Automatically downloads and compiles
+  Elixir's language server.
+- `roles/neovim/files/coc.vim.link`: coc.nvim configuration.
+- `roles/neovim/files/coc-settings.json.link`: coc.nvim JSON configuration.
 
 ## Author
 
