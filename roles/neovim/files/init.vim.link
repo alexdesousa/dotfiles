@@ -50,6 +50,7 @@ call plug#begin('~/.config/nvim/plugged')
 
   Plug 'dart-lang/dart-vim-plugin'                " Dart syntax highlighting
   Plug 'tomlion/vim-solidity'                     " Solidity syntax highlighting
+  Plug 'hashivim/vim-terraform'                   " Terraform syntax highlighting
 
   Plug 'elixir-editors/vim-elixir'                " Elixir syntax highlighting
 
@@ -57,6 +58,25 @@ call plug#begin('~/.config/nvim/plugged')
   Plug 'elixir-lsp/elixir-ls', { 'do': { -> g:ElixirLS.compile() } }
 
 call plug#end()
+
+""""""""""""
+" FZF config
+
+let mapleader = '-'
+noremap <Leader>ff :FZF<CR>
+
+""""""""""""""""""""
+" VIm Airline config
+
+let laststatus=2
+let g:airline_theme='jellybeans'
+let g:airline_powerline_fonts=1
+
+""""""""""""""""""
+" Terraform config
+
+let g:terraform_align=1
+let g:terraform_fmt_on_save=1
 
 """"""""""""""""""""""""
 " Elixir Language Server
@@ -77,15 +97,4 @@ let g:coc_global_extensions = [
   \ 'coc-diagnostic'
   \ ]
 
-""""""""""""
-" FZF config
-
-let mapleader = '-'
-noremap <Leader>ff :FZF<CR>
-
-""""""""""""""""""""
-" VIm Airline config
-
-let laststatus=2
-let g:airline_theme='jellybeans'
-let g:airline_powerline_fonts=1
+source ~/.config/nvim/coc.vim
