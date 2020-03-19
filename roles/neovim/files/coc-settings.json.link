@@ -1,6 +1,7 @@
 {
   "codeLens.enable": true,
   "coc.preferences.formatOnSaveFiletypes": ["css", "elixir", "eelixir"],
+  "coc.preferences.jumpCommand": "tab drop",
   "diagnostic-languageserver.filetypes": {
     "elixir": ["mix_credo", "mix_credo_compile"],
     "eelixir": ["mix_credo", "mix_credo_compile"]

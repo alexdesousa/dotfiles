@@ -22,6 +22,9 @@ inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 " preselect first completion item
 inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>"
 
+" jump on definition
+nmap <silent>gd <Plug>(coc-definition)<CR>
+
 " close preview when is done
 augroup DoneCompletion
   autocmd!
