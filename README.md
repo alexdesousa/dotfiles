@@ -172,6 +172,10 @@ Relevant files:
 - `roles/neovim/files/coc.vim.link`: coc.nvim configuration.
 - `roles/neovim/files/coc-settings.json.link`: coc.nvim JSON configuration.
 
+## Visual Code Role
+
+Installs Visual Code and configures it.
+
 ## Author
 
 Alexander de Sousa.
