@@ -1,0 +1,18 @@
+---
+###############################################################################
+# Visual Code
+
+- name: Visual Code | Downloads .deb file | get_url
+  get_url:
+    url: "{{ visual_code_link }}"
+    dest: "{{ dotfiles_home }}/downloads/code.deb"
+
+- name: Visual Code | Install package | apt
+  become: yes
+  become_user: root
+  apt:
+    deb: "{{ dotfiles_home }}/downloads/code.deb"
+
+- name: Visual Code | Install extensions | command
+  loop: "{{ visual_code_extensions }}"
+  command: code --install-extension "{{ item }}"

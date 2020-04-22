@@ -39,3 +39,6 @@
     - role: neovim
       tags:
         - neovim
+    - role: code
+      tags:
+        - code
