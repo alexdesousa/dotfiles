@@ -9,3 +9,5 @@ visual_code_extensions:
   - "jakebecker.elixir-ls"
   - "mjmcloug.vscode-elixir"
   - "bradlc.vscode-tailwindcss"
+
+visual_code_home: "{{ dotfiles_user_home }}/.config/Code/User"

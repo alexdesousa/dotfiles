@@ -27,6 +27,16 @@ source ~/.config/nvim/tabs.vim
 
 source ~/.config/nvim/mkdir.vim
 
+"""""""""""""""""""""""
+" Fastlane highlighting
+
+source ~/.config/nvim/fastlane.vim
+
+"""""""""""""""""""""
+" Erlang highlighting
+
+source ~/.config/nvim/erlang.vim
+
 """"""""""
 " Load FZF
 
@@ -51,11 +61,15 @@ call plug#begin('~/.config/nvim/plugged')
   Plug 'dart-lang/dart-vim-plugin'                " Dart syntax highlighting
   Plug 'tomlion/vim-solidity'                     " Solidity syntax highlighting
   Plug 'hashivim/vim-terraform'                   " Terraform syntax highlighting
+  Plug 'vim-scripts/dbext.vim'                    " DBExt plugin
 
   Plug 'elixir-editors/vim-elixir'                " Elixir syntax highlighting
 
   " Custom plugins
   Plug 'elixir-lsp/elixir-ls', { 'do': { -> g:ElixirLS.compile() } }
+
+  " Survey language
+  Plug '~/Projects/open_source/alexdesousa/survey-lang/vim-survey'
 
 call plug#end()
 

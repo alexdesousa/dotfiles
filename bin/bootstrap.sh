@@ -101,7 +101,11 @@ DOTFILES_BOOTSTRAP_USER_HOME=$(
 ###########
 # Bootstrap
 
-apt-get update && apt-get install -y sudo ansible
+apt update && apt install -y sudo ansible
+
+apt upgrade
+
+apt autoremove
 
 adduser "$DOTFILES_BOOTSTRAP_USER" sudo
 

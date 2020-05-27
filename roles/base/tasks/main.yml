@@ -18,13 +18,6 @@
   failed_when: base_add_x86.rc >= 1
   changed_when: base_add_x86.rc == 0
 
-- name: Base | Upgrades system | apt
-  become: yes
-  become_user: root
-  apt:
-    upgrade: 'yes'
-    update_cache: yes
-
 - name: Base | Installs packages | apt
   become: yes
   become_user: root

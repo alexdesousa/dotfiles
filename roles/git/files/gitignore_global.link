@@ -10,3 +10,9 @@ Session.vim
 *~
 # auto-generated tag files
 tags
+# node_modules
+node_modules/
+# env files
+.env*
+# Elixir Language Server
+.elixir_ls/

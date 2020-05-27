@@ -43,6 +43,20 @@
     state: link
     force: yes
 
+- name: Neovim | Links fastlane.vim file | file
+  file:
+    src: "{{ dotfiles_home }}/roles/neovim/files/fastlane.vim.link"
+    dest: "{{ neovim_home }}/fastlane.vim"
+    state: link
+    force: yes
+
+- name: Neovim | Links erlang.vim file | file
+  file:
+    src: "{{ dotfiles_home }}/roles/neovim/files/erlang.vim.link"
+    dest: "{{ neovim_home }}/erlang.vim"
+    state: link
+    force: yes
+
 - name: Neovim | Links elixir-ls.vim file | file
   file:
     src: "{{ dotfiles_home }}/roles/neovim/files/elixir-ls.vim.link"
