@@ -107,6 +107,11 @@ apt upgrade
 
 apt autoremove
 
+update-alternatives --install /usr/bin/python python /usr/bin/python2 1
+update-alternatives --install /usr/bin/python python /usr/bin/python3 2
+
+export PATH="$PATH:/usr/sbin"
+
 adduser "$DOTFILES_BOOTSTRAP_USER" sudo
 
 if [ ! -f "$DOTFILES_CUSTOM_CONFIG" ]
