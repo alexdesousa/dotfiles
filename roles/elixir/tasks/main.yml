@@ -7,6 +7,9 @@
   register: elixir_add
   failed_when: elixir_add.rc == 1
 
+- name: Elixir | Updates Elixir plugin | command
+  command: "{{ asdf_bin }} plugin-update elixir"
+
 - name: Elixir | Installs Elixir versions | command
   command: "{{ asdf_bin }} install elixir {{ item }}"
   loop: "{{ elixir_versions }}"

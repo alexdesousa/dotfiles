@@ -13,4 +13,4 @@ erlang_dependencies:
   - fop
 
 erlang_versions:
-  - 22.3.3
+  - 23.0.3

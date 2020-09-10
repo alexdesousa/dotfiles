@@ -15,6 +15,9 @@
   register: erlang_add
   failed_when: erlang_add.rc == 1
 
+- name: Erlang | Updates Erlang plugin | shell
+  command: "{{ asdf_bin }} plugin-update erlang"
+
 - name: Erlang | Installs Erlang versions | command
   command: "{{ asdf_bin }} install erlang {{ item }}"
   loop: "{{ erlang_versions }}"
