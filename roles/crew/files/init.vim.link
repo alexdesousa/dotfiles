@@ -1,0 +1,108 @@
+""""""""""""""
+" Basic config
+
+set nocompatible            " disable compatibility to old-time vi
+set showmatch               " show matching brackets.
+set hlsearch                " highlight search results
+set tabstop=2               " number of columns occupied by a tab character
+set softtabstop=2           " see multiple spaces as tabstops so <BS> does the right thing
+set expandtab               " converts tabs to white space
+set shiftwidth=2            " width for autoindents
+set autoindent              " indent a new line the same amount as the line just typed
+set number                  " add line numbers
+set wildmode=longest,list   " get bash-like tab completions
+set colorcolumn=80          " set an 80 column border
+set textwidth=79            " text width
+set encoding=utf-8          " Encoding UTF-8
+set fileencoding=utf-8      " File encoding UTF-8
+syntax on                   " syntax highlighting
+
+""""""""""""""""
+" Set tab number
+
+source ~/.config/nvim/tabs.vim
+
+"""""""""""""""""""""""""""
+" Set mkdir on save autocmd
+
+source ~/.config/nvim/mkdir.vim
+
+"""""""""""""""""""""
+" Erlang highlighting
+
+source ~/.config/nvim/erlang.vim
+
+""""""""""
+" Load FZF
+
+source /usr/share/doc/fzf/examples/fzf.vim
+
+"""""""""""""""
+" Load vim-plug
+
+set rtp+=~/.config/nvim/bootstrap/vim-plug/plug.vim
+
+""""""""""""""""""""""""""
+" Declare vim-plug plugins
+
+call plug#begin('~/.config/nvim/plugged')
+
+  Plug 'vim-airline/vim-airline'                  " VIm airline status bar
+  Plug 'vim-airline/vim-airline-themes'           " VIm airline themes
+  Plug 'tpope/vim-fugitive'                       " Git command wrapper
+  Plug 'junegunn/fzf.vim'                         " FZF support.
+  Plug 'neoclide/coc.nvim', {'branch': 'release'} " Coc plugin
+
+  Plug 'dart-lang/dart-vim-plugin'                " Dart syntax highlighting
+  Plug 'tomlion/vim-solidity'                     " Solidity syntax highlighting
+  Plug 'hashivim/vim-terraform'                   " Terraform syntax highlighting
+  Plug 'vim-scripts/dbext.vim'                    " DBExt plugin
+
+  Plug 'elixir-editors/vim-elixir'                " Elixir syntax highlighting
+
+  Plug 'tpope/vim-liquid'                         " Liquid syntax highlighting
+
+  " Custom plugins
+  Plug 'elixir-lsp/elixir-ls', { 'do': { -> g:ElixirLS.compile() } }
+
+call plug#end()
+
+""""""""""""
+" FZF config
+
+let mapleader = '-'
+noremap <Leader>ff :FZF<CR>
+
+""""""""""""""""""""
+" VIm Airline config
+
+let laststatus=2
+let g:airline_theme='jellybeans'
+let g:airline_powerline_fonts=1
+
+""""""""""""""""""
+" Terraform config
+
+let g:terraform_align=1
+let g:terraform_fmt_on_save=1
+
+""""""""""""""""""""""""
+" Elixir Language Server
+
+source ~/.config/nvim/elixir-ls.vim
+
+""""""""""""
+" Coc config
+
+let g:coc_global_extensions = [
+  \ 'coc-tsserver',
+  \ 'coc-eslint',
+  \ 'coc-json',
+  \ 'coc-prettier',
+  \ 'coc-css',
+  \ 'coc-tailwindcss',
+  \ 'coc-elixir',
+  \ 'coc-diagnostic'
+  \ ]
+
+source ~/.config/nvim/coc.vim

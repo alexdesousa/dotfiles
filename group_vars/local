@@ -1,4 +1,0 @@
-dotfiles_home: "{{ lookup('env', 'DOTFILES_BOOTSTRAP_ROOT') }}"
-
-dotfiles_user: "{{ lookup('env', 'DOTFILES_BOOTSTRAP_USER') }}"
-dotfiles_user_home: "{{ lookup('env', 'DOTFILES_BOOTSTRAP_USER_HOME') }}"

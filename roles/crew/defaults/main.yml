@@ -1,0 +1,28 @@
+asdf:
+  src: "{{ dotfiles.home }}/.asdf/asdf.sh"
+  bin: "{{ dotfiles.home }}/.asdf/bin/asdf"
+erlang:
+  versions:
+    - 24.2
+  dependencies:
+    - build-essential
+    - autoconf
+    - m4
+    - libncurses5-dev
+    - libwxgtk3.0-gtk3-dev
+    - libgl1-mesa-dev
+    - libglu1-mesa-dev
+    - libpng-dev
+    - libssh-dev
+    - unixodbc-dev
+    - xsltproc
+    - fop
+elixir:
+  versions:
+    - 1.13.1
+nodejs:
+  versions:
+    - 17.3.0
+  dependencies:
+    - dirmngr
+    - gpg

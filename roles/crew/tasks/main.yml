@@ -1,0 +1,174 @@
+---
+###############################################################################
+# An engine without a crew cannot be controlled
+
+- name: zsh | Creates directoty for zsh files | file
+  file:
+    path: "{{ dotfiles.home }}/.config/dotfiles/crew"
+    state: directory
+
+- name: erlang | Installs dependencies | apt
+  become: yes
+  become_user: root
+  loop: "{{ erlang.dependencies }}"
+  apt:
+    name: "{{ item }}"
+    state: present
+
+- name: erlang | Installs Erlang plugin | shell
+  command: "{{ asdf.bin }} plugin-add erlang"
+  register: erlang_add
+  failed_when: erlang_add.rc == 1
+
+- name: erlang | Updates Erlang plugin | shell
+  command: "{{ asdf.bin }} plugin-update erlang"
+
+- name: erlang | Installs Erlang versions | command
+  command: "{{ asdf.bin }} install erlang {{ item }}"
+  loop: "{{ erlang.versions }}"
+
+- name: erlang | Sets default Erlang version | command
+  command: "{{ asdf.bin }} global erlang {{ erlang.versions[0] }}"
+
+- name: erlang | Links erlang.zsh file | file
+  file:
+    src: "{{ playbook_dir }}/roles/crew/files/erlang.zsh.link"
+    dest: "{{ dotfiles.home }}/.config/dotfiles/crew/erlang.zsh"
+    state: link
+    force: yes
+
+- name: elixir | Installs Elixir plugin | shell
+  command: "{{ asdf.bin }} plugin-add elixir"
+  register: elixir_add
+  failed_when: elixir_add.rc == 1
+
+- name: elixir | Updates Elixir plugin | shell
+  command: "{{ asdf.bin }} plugin-update elixir"
+
+- name: elixir | Installs Elixir versions | command
+  command: "{{ asdf.bin }} install elixir {{ item }}"
+  loop: "{{ elixir.versions }}"
+
+- name: elixir | Sets default Elixir version | command
+  command: "{{ asdf.bin }} global elixir {{ elixir.versions[0] }}"
+
+- name: nodejs | Installs dependencies | apt
+  become: yes
+  become_user: root
+  loop: "{{ nodejs.dependencies }}"
+  apt:
+    name: "{{ item }}"
+    state: present
+
+- name: nodejs | Installs NodeJS plugin | shell
+  command: "{{ asdf.bin }} plugin-add nodejs"
+  register: nodejs_add
+  failed_when: nodejs_add.rc == 1
+
+- name: nodejs | Updates NodeJS plugin | shell
+  command: "{{ asdf.bin }} plugin-update nodejs"
+
+- name: nodejs | Installs NodeJS versions | command
+  shell: "source {{asdf.src}} && {{ asdf.bin }} install nodejs {{ item }}"
+  args:
+    executable: /bin/zsh
+  loop: "{{ nodejs.versions }}"
+
+- name: nodejs | Sets default NodeJS version | command
+  command: "{{ asdf.bin }} global nodejs {{ nodejs.versions[0] }}"
+
+- name: asdf | Reshim languages | shell
+  command: "{{ asdf.bin }} reshim"
+
+- name: neovim | Installs Neovim | apt
+  become: yes
+  become_user: root
+  apt:
+   name: neovim
+   state: present
+
+- name: neovim | Incstall Powerline | apt
+  become: yes
+  become_user: root
+  apt:
+    name: powerline
+    state: present
+
+- name: neovim | Creates neovim config folder | file
+  file:
+    path: "{{ dotfiles.home }}/.config/nvim"
+    state: directory
+    mode: '0755'
+
+- name: neovim | Links init.vim file | file
+  file:
+    src: "{{ playbook_dir }}/roles/crew/files/init.vim.link"
+    dest: "{{ dotfiles.home }}/.config/nvim/init.vim"
+    state: link
+    force: yes
+
+- name: neovim | Links tabs.vim file | file
+  file:
+    src: "{{ playbook_dir }}/roles/crew/files/tabs.vim.link"
+    dest: "{{ dotfiles.home }}/.config/nvim/tabs.vim"
+    state: link
+    force: yes
+
+- name: neovim | Links mkdir.vim file | file
+  file:
+    src: "{{ playbook_dir }}/roles/crew/files/mkdir.vim.link"
+    dest: "{{ dotfiles.home }}/.config/nvim/mkdir.vim"
+    state: link
+    force: yes
+
+- name: neovim | Links erlang.vim file | file
+  file:
+    src: "{{ playbook_dir }}/roles/crew/files/erlang.vim.link"
+    dest: "{{ dotfiles.home }}/.config/nvim/erlang.vim"
+    state: link
+    force: yes
+
+- name: neovim | Links elixir-ls.vim file | file
+  file:
+    src: "{{ playbook_dir }}/roles/crew/files/elixir-ls.vim.link"
+    dest: "{{ dotfiles.home }}/.config/nvim/elixir-ls.vim"
+    state: link
+    force: yes
+
+- name: neovim | Links coc.vim file | file
+  file:
+    src: "{{ playbook_dir }}/roles/crew/files/coc.vim.link"
+    dest: "{{ dotfiles.home }}/.config/nvim/coc.vim"
+    state: link
+    force: yes
+
+- name: neovim | Links coc-settings.json file | file
+  file:
+    src: "{{ playbook_dir }}/roles/crew/files/coc-settings.json.link"
+    dest: "{{ dotfiles.home }}/.config/nvim/coc-settings.json"
+    state: link
+    force: yes
+
+- name: neovim | Clones vim-plug | git
+  git:
+    repo: "https://github.com/junegunn/vim-plug.git"
+    dest: "{{ dotfiles.home }}/.config/nvim/bootstrap/vim-plug"
+    clone: yes
+    update: yes
+    force: yes
+
+- name: neovim | Create autoload folder | file
+  file:
+    dest: "{{ dotfiles.home }}/.local/share/nvim/site/autoload"
+    state: directory
+    mode: '0755'
+
+- name: neovim | Links plug.vim to autoload | file
+  file:
+    src: "{{ dotfiles.home }}/.config/nvim/bootstrap/vim-plug/plug.vim"
+    dest: "{{ dotfiles.home }}/.local/share/nvim/site/autoload/plug.vim"
+    state: link
+    force: yes
+
+- name: neovim | Installs plugins | command
+  command: vim +PlugInstall +qall

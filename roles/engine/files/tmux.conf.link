@@ -1,0 +1,36 @@
+bind -n M-Left select-pane -L
+bind -n M-Right select-pane -R
+bind -n M-Up select-pane -U
+bind -n M-Down select-pane -D
+
+setw -g monitor-activity on
+set -g visual-activity on
+set -g default-terminal "xterm-256color"
+set -g @plugin 'thewtex/tmux-mem-cpu-load'
+
+set-option -g default-shell /bin/zsh
+set -g pane-border-style fg=magenta
+set -g pane-active-border-style "bg=default fg=magenta"
+set-option -g status on
+set-option -g status-interval 1
+set-option -g status-justify centre
+set-option -g status-keys vi
+set-option -g status-position bottom
+set-option -g status-style fg=magenta,bright,bg=colour235
+set-option -g status-left-length 20
+set-option -g status-left-style default
+set-option -g status-left "#[fg=blue]#H #[fg=magenta]• #[fg=blue,bright]#(uname -r)#[default]"
+set-option -g status-right-length 140
+set-option -g status-right-style default
+set-option -g status-right "#[fg=magenta,bg=default,bright]#($HOME/.tmux/plugins/tmux-mem-cpu-load/tmux-mem-cpu-load) "
+set-option -ag status-right " #[fg=blue,bg=default]%a %k:%M:%S #[default] #[fg=blue]%Y-%m-%d"
+set-window-option -g window-status-style fg=colour244
+set-window-option -g window-status-style bg=default
+set-window-option -g window-status-current-style fg=magenta
+set-window-option -g window-status-current-style bg=default
+
+set-window-option -g mode-keys vi
+set-window-option -g automatic-rename off
+
+bind D source-file ~/.tmux/dev
+run '/usr/share/tmux-plugin-manager/tpm'

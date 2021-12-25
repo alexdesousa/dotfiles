@@ -1,0 +1,11 @@
+- name: Engage!
+  hosts: local
+  vars_files:
+    - ./vars/secrets.yml
+  roles:
+    - role: engine
+      tags:
+        - engine
+    - role: crew
+      tags:
+        - crew

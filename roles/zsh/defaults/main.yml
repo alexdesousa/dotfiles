@@ -1,2 +1,0 @@
-zsh_oath_key: "{{ lookup('env', 'DOTFILES_BOOTSTRAP_ZSH_OATH_KEY') }}"
-zsh_oath_email: "{{ lookup('env', 'DOTFILES_BOOTSTRAP_ZSH_OATH_EMAIL') }}"
