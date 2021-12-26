@@ -14,6 +14,8 @@ $ sudo apt install ansible
 $ ./bin/engage.sh
 ```
 
+![Shell preview](shell.gif)
+
 ## Engine Role
 
 My shell is the engine of any development, so this role sets up my shell. It
