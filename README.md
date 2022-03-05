@@ -22,6 +22,7 @@ My shell is the engine of any development, so this role sets up my shell. It
 installs and configures:
 - `git`
 - `docker` and `docker-compose`
+- `act`
 - `tmux`
 - `fzf`
 - `zsh`

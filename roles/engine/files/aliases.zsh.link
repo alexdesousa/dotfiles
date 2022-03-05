@@ -3,6 +3,7 @@
 
 alias open="xdg-open"
 alias vim="nvim"
+alias act="sudo /opt/act/act"
 
 # END: Aliases
 ###############################################################################

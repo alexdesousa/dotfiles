@@ -47,6 +47,33 @@
     state: link
     force: yes
 
+- name: act | Create temporary directory | tempfile
+  tempfile:
+    state: directory
+    suffix: act
+  register: temp_act
+
+- name: act | Download script | get_url
+  become: yes
+  become: root
+  get_url:
+    url: "https://raw.githubusercontent.com/nektos/act/master/install.sh"
+    dest: "{{ temp_act.path }}/install.sh"
+    mode: '0700'
+  when: temp_act.path is defined
+
+- name: act | Install act | command
+  become: yes
+  become_user: root
+  command: "{{ temp_act.path }}/install.sh -b /opt/act"
+  when: temp_act.path is defined
+
+- name: act | Remove script | file
+  file:
+    path: "{{ temp_act.path }}"
+    state: absent
+  when: temp_act.path is defined
+
 - name: tmux | Installs tmux | apt
   become: yes
   become_user: root
