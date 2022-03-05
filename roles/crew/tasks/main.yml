@@ -77,6 +77,29 @@
 - name: nodejs | Sets default NodeJS version | command
   command: "{{ asdf.bin }} global nodejs {{ nodejs.versions[0] }}"
 
+- name: ruby | Installs dependencies | apt
+  become: yes
+  become_user: root
+  loop: "{{ ruby.dependencies }}"
+  apt:
+    name: "{{ item }}"
+    state: present
+
+- name: ruby | Installs Ruby plugin | shell
+  command: "{{ asdf.bin }} plugin-add ruby"
+  register: ruby_add
+  failed_when: ruby_add.rc == 1
+
+- name: ruby | Updates Ruby plugin | shell
+  command: "{{ asdf.bin }} plugin-update ruby"
+
+- name: ruby | Installs Ruby versions | command
+  command: "{{ asdf.bin }} install ruby {{ item }}"
+  loop: "{{ ruby.versions }}"
+
+- name: ruby | Sets default Ruby version | command
+  command: "{{ asdf.bin }} global ruby {{ ruby.versions[0] }}"
+
 - name: asdf | Reshim languages | shell
   command: "{{ asdf.bin }} reshim"
 

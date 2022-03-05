@@ -41,6 +41,7 @@ use. These languages are the crew of my shell:
 - `erlang`
 - `elixir`
 - `nodejs`
+- `ruby`
 - `neovim`
 
 ## Elixir Language Server

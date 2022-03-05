@@ -20,6 +20,22 @@ erlang:
 elixir:
   versions:
     - 1.13.1
+ruby:
+  versions:
+    - 2.6.3
+  dependencies:
+    - autoconf
+    - bison
+    - build-essential
+    - libssl-dev
+    - libyaml-dev
+    - libreadline6-dev
+    - zlib1g-dev
+    - libncurses5-dev
+    - libffi-dev
+    - libgdbm6
+    - libgdbm-dev
+    - libdb-dev
 nodejs:
   versions:
     - 17.3.0
