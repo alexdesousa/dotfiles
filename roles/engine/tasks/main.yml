@@ -240,3 +240,22 @@
     dest: "{{ dotfiles.home }}/.zshrc"
     state: link
     force: yes
+
+- name: sqitch | Installs sqitch | apt
+  become: yes
+  become_user: root
+  apt:
+    pkg:
+    - sqitch
+    - libdbd-pg-perl
+    - postgresql-client
+
+- name: sqitch | Creates folder for sqitch config | file
+  file:
+    path: "{{ dotfiles.home }}/.sqitch"
+    state: directory
+
+- name: sqitch | Generate sqitch.conf file | template
+  template:
+    src: "sqitch.conf.j2"
+    dest: "{{ dotfiles.home }}/.sqitch/sqitch.conf"
