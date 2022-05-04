@@ -7,6 +7,13 @@
     path: "{{ dotfiles.home }}/.config/dotfiles/engine"
     state: directory
 
+- name: git | Installs gnupg2 | apt
+  become: yes
+  become_user: root
+  apt:
+    name: gnupg2
+    state: present
+
 - name: git | Installs git | apt
   become: yes
   become_user: root
