@@ -42,3 +42,6 @@ nodejs:
   dependencies:
     - dirmngr
     - gpg
+terraform:
+  versions:
+    - 1.1.9

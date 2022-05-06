@@ -100,6 +100,21 @@
 - name: ruby | Sets default Ruby version | command
   command: "{{ asdf.bin }} global ruby {{ ruby.versions[0] }}"
 
+- name: terraform | Installs Terraform plugin | shell
+  command: "{{ asdf.bin }} plugin-add terraform https://github.com/asdf-community/asdf-hashicorp.git"
+  register: terraform_add
+  failed_when: terraform_add.rc == 1
+
+- name: terraform | Updates Terraform plugin | shell
+  command: "{{ asdf.bin }} plugin-update terraform"
+
+- name: terraform | Installs Terraform versions | command
+  command: "{{ asdf.bin }} install terraform {{ item }}"
+  loop: "{{ terraform.versions }}"
+
+- name: terraform | Sets default Terraform version | command
+  command: "{{ asdf.bin }} global terraform {{ terraform.versions[0] }}"
+
 - name: asdf | Reshim languages | shell
   command: "{{ asdf.bin }} reshim"
 
