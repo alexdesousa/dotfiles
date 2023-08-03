@@ -62,6 +62,8 @@ call plug#begin('~/.config/nvim/plugged')
 
   Plug 'tpope/vim-liquid'                         " Liquid syntax highlighting
 
+  Plug 'amadeus/vim-mjml'                         " MJML syntax highlighting
+
   " Custom plugins
   Plug 'elixir-lsp/elixir-ls', { 'do': { -> g:ElixirLS.compile() } }
 

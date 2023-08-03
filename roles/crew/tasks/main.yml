@@ -115,6 +115,36 @@
 - name: terraform | Sets default Terraform version | command
   command: "{{ asdf.bin }} global terraform {{ terraform.versions[0] }}"
 
+- name: yarn | Installs Yarn plugin | shell
+  command: "{{ asdf.bin }} plugin-add yarn"
+  register: yarn_add
+  failed_when: yarn_add.rc == 1
+
+- name: yarn | Updates Yarn plugin | shell
+  command: "{{ asdf.bin }} plugin-update yarn"
+
+- name: yarn | Installs Yarn versions | command
+  command: "{{ asdf.bin }} install yarn {{ item }}"
+  loop: "{{ yarn.versions }}"
+
+- name: yarn | Sets default Yarn version | command
+  command: "{{ asdf.bin }} global yarn {{ ruby.versions[0] }}"
+
+- name: rust | Installs Rust plugin | shell
+  command: "{{ asdf.bin }} plugin-add rust"
+  register: rust_add
+  failed_when: rust_add.rc == 1
+
+- name: rust | Updates Rust plugin | shell
+  command: "{{ asdf.bin }} plugin-update rust"
+
+- name: rust | Installs Rust versions | command
+  command: "{{ asdf.bin }} install rust {{ item }}"
+  loop: "{{ rust.versions }}"
+
+- name: rust | Sets default Rust version | command
+  command: "{{ asdf.bin }} global rust {{ ruby.versions[0] }}"
+
 - name: asdf | Reshim languages | shell
   command: "{{ asdf.bin }} reshim"
 

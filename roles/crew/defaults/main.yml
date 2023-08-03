@@ -3,7 +3,7 @@ asdf:
   bin: "{{ dotfiles.home }}/.asdf/bin/asdf"
 erlang:
   versions:
-    - 24.2
+    - 25.3.2.5
   dependencies:
     - build-essential
     - autoconf
@@ -19,10 +19,10 @@ erlang:
     - fop
 elixir:
   versions:
-    - 1.13.1
+    - 1.14.5-otp-25
 ruby:
   versions:
-    - 2.6.3
+    - 2.6.9
   dependencies:
     - autoconf
     - bison
@@ -38,10 +38,16 @@ ruby:
     - libdb-dev
 nodejs:
   versions:
-    - 17.3.0
+    - 18.12.0
   dependencies:
     - dirmngr
     - gpg
 terraform:
   versions:
-    - 1.1.9
+    - 1.4.6
+yarn:
+  versions:
+    - 1.22.17
+rust:
+  versions:
+    - 1.69.0

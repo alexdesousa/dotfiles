@@ -30,6 +30,7 @@ set-window-option -g window-status-style fg=colour244
 set-window-option -g window-status-style bg=default
 set-window-option -g window-status-current-style fg=magenta
 set-window-option -g window-status-current-style bg=default
+set-option -g history-limit 20000
 
 set-window-option -g mode-keys vi
 set-window-option -g automatic-rename off
