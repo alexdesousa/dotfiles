@@ -7,6 +7,10 @@
       tags:
         - engine
         - base
+    - role: pass
+      tags:
+        - engine
+        - pass
     - role: vim
       tags:
         - engine

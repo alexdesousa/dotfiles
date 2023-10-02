@@ -14,9 +14,6 @@
     - fd-find
     - fzf
     - git
-    - gnupg2
-    - oathtool
-    - xclip
     - zsh
 
 - name: git | Links global gitignore file | file
