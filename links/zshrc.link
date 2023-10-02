@@ -12,7 +12,6 @@ autoload -U add-zsh-hook
 plugins=(
   git
   hab
-  oath
   zsh-autosuggestions
   zsh-syntax-highlighting
 )
@@ -20,15 +19,6 @@ plugins=(
 source "$ZSH/oh-my-zsh.sh"
 
 # END: Base
-###############################################################################
-
-###############################################################################
-# BEGIN: Oath
-
-export OATH_KEY="{{ engine.oath.key }}"
-export OATH_EMAIL="{{ engine.oath.email }}"
-
-# END: Oath
 ###############################################################################
 
 ###############################################################################

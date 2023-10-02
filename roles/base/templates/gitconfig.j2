@@ -1,0 +1,9 @@
+[user]
+	email = {{ base.git.email }}
+	name = {{ base.git.name }}
+	signingkey = {{ base.git.key }}
+[core]
+	editor = vim
+	excludesfile = {{ ansible_env.HOME }}/.gitignore_global
+[commit]
+	gpgsign = true

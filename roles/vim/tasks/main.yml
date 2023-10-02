@@ -1,0 +1,69 @@
+---
+###############################################################################
+# Installs NeoVIm
+
+- name: neovim | Installs dependencies | apt
+  become: yes
+  apt:
+    state: present
+    pkg:
+    - neovim
+
+- name: nerd-font | Install a JetBrains Mono Nerd Font | unarchive
+  unarchive:
+    src: "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/JetBrainsMono.zip"
+    dest: "{{ ansible_env.HOME }}/.local/share/fonts"
+    remote_src: yes
+
+- name: nerd-font | Update font cache | command
+  command: fc-cache -fv
+
+- name: neovim | Delete cached NeoVIm config | file
+  file:
+    path: "{{ ansible_env.HOME }}/.local/share/nvim"
+    state: absent
+
+- name: neovim | Install NvChad | git
+  git:
+    repo: "https://github.com/NvChad/NvChad.git"
+    dest: "{{ ansible_env.HOME }}/.config/nvim"
+    depth: 1
+    clone: yes
+    update: no
+    force: no
+
+- name: neovim | Create config folder | file
+  file:
+    path: "{{ ansible_env.HOME }}/.config/nvim/lua/custom"
+    state: directory
+
+- name: neovim | Copy NeoVIm config | file
+  file:
+    src: "{{ playbook_dir }}/links/init.lua.link"
+    dest: "{{ ansible_env.HOME }}/.config/nvim/lua/custom/init.lua"
+    state: link
+    force: yes
+
+- name: neovim | Copy NvChad config | file
+  file:
+    src: "{{ playbook_dir }}/links/chadrc.lua.link"
+    dest: "{{ ansible_env.HOME }}/.config/nvim/lua/custom/chadrc.lua"
+    state: link
+    force: yes
+
+- name: neovim | Copy NvChad plugins config | file
+  file:
+    src: "{{ playbook_dir }}/links/plugins.lua.link"
+    dest: "{{ ansible_env.HOME }}/.config/nvim/lua/custom/plugins.lua"
+    state: link
+    force: yes
+
+- name: ssh | Copy SSH config | file
+  file:
+    src: "{{ playbook_dir }}/links/ssh.config.link"
+    dest: "{{ ansible_env.HOME }}/.ssh/config"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: "0664"
+    state: link
+    force: yes

@@ -1,9 +1,7 @@
 ###############################################################################
-# BEGIN: Aliases
+# BEGIN: Erlang
 
-alias open="xdg-open"
-alias vim="nvim"
-alias act="sudo /opt/act/act"
+export ERL_AFLAGS="-kernel shell_history enabled"
 
-# END: Aliases
+# END: Erlang
 ###############################################################################

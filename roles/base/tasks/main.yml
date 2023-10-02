@@ -1,0 +1,132 @@
+---
+###############################################################################
+# Install the base tooling
+
+- name: deps | Installs dependencies | apt
+  become: yes
+  apt:
+    update_cache: yes
+    state: present
+    pkg:
+    - bat
+    - docker
+    - docker-compose
+    - fd-find
+    - fzf
+    - git
+    - gnupg2
+    - oathtool
+    - xclip
+    - zsh
+
+- name: git | Links global gitignore file | file
+  file:
+    src: "{{ playbook_dir }}/links/gitignore_global.link"
+    dest: "{{ ansible_env.HOME }}/.gitignore_global"
+    state: link
+    force: yes
+
+- name: git | Copies git config | template
+  template:
+    src: "gitconfig.j2"
+    dest: "{{ ansible_env.HOME }}/.gitconfig"
+
+- name: zsh | Creates directory for zsh files | file
+  file:
+    path: "{{ ansible_env.HOME }}/.config/dotfiles/engine"
+    state: directory
+
+- name: docker | Links docker.zsh file | file
+  file:
+    src: "{{ playbook_dir }}/links/docker.zsh.link"
+    dest: "{{ ansible_env.HOME }}/.config/dotfiles/enfine/docker.zsh"
+    state: link
+    force: yes
+
+- name: docker | Adds docker group | group
+  group:
+    name: docker
+    state: present
+
+- name: docker | Adds current user to docker group | user
+  become: yes
+  user:
+    name: '{{ ansible_user }}'
+    groups: docker
+    append: yes
+
+- name: asdf | Installs asdf | git
+  git:
+    repo: "https://github.com/asdf-vm/asdf.git"
+    dest: "{{ ansible_env.HOME }}/.asdf"
+    clone: yes
+    update: yes
+    force: yes
+
+- name: fzf | Links fzf.zsh file | file
+  file:
+    src: "{{ playbook_dir }}/links/fzf.zsh.link"
+    dest: "{{ ansible_env.HOME }}/.config/dotfiles/engine/fzf.zsh"
+    state: link
+    force: yes
+
+- name: zsh | Sets zsh as default shell for {{ ansible_user }} | command
+  become: yes
+  command: chsh -s /bin/zsh {{ ansible_user }}
+  register: zsh_for_user
+  failed_when: zsh_for_user.rc >= 1
+  changed_when: zsh_for_user.rc = 0
+
+- name: zsh | Checks for oh-my-zsh installation | stat
+  stat:
+    path: "{{ ansible_env.HOME }}/.oh-my-zsh"
+  register: oh_my_zsh_stat
+
+- name: zsh | Installs oh-my-zsh | raw
+  raw: 'sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"'
+  when: not oh_my_zsh_stat.stat.exists
+  
+- name: zsh | Install hab | git
+  git:
+    repo: "https://github.com/alexdesousa/hab.git"
+    dest: "{{ ansible_env.HOME }}/.oh-my-zsh/custom/plugins/hab"
+    clone: yes
+    update: yes
+    force: yes
+
+- name: zsh | Install zsh-syntax-highlighting | git
+  git:
+    repo: "https://github.com/zsh-users/zsh-syntax-highlighting.git"
+    dest: "{{ ansible_env.HOME }}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"
+    clone: yes
+    update: yes
+    force: yes
+
+- name: zsh | Install zsh-autosuggestions | git
+  git:
+    repo: "https://github.com/zsh-users/zsh-autosuggestions.git"
+    dest: "{{ ansible_env.HOME }}/.oh-my-zsh/custom/plugins/zsh-autosuggestions"
+    clone: yes
+    update: yes
+    force: yes
+
+- name: zsh | Links aliases.zsh file | file
+  file:
+    src: "{{ playbook_dir }}/links/aliases.zsh.link"
+    dest: "{{ ansible_env.HOME }}/.config/dotfiles/engine/aliases.zsh"
+    state: link
+    force: yes
+
+- name: zsh | Install Etadelius theme | file
+  file:
+    src: "{{ playbook_dir }}/links/etadelius.zsh-theme.link"
+    dest: "{{ ansible_env.HOME }}/.oh-my-zsh/themes/etadelius.zsh-theme"
+    state: link
+    force: yes
+
+- name: zsh | Links .zshrc file | file
+  file:
+    src: "{{ playbook_dir }}/links/zshrc.link"
+    dest: "{{ ansible_env.HOME }}/.zshrc"
+    state: link
+    force: yes

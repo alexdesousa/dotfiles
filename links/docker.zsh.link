@@ -11,5 +11,7 @@ function docker_clean_all {
 
 docker_clean_all='docker_clean_all'
 
+export DOCKER_BUILDKIT=1
+
 # END: Docker aliases
 ###############################################################################

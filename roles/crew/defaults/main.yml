@@ -1,15 +1,16 @@
 asdf:
-  src: "{{ dotfiles.home }}/.asdf/asdf.sh"
-  bin: "{{ dotfiles.home }}/.asdf/bin/asdf"
+  src: "{{ ansible_env.HOME }}/.asdf/asdf.sh"
+  bin: "{{ ansible_env.HOME }}/.asdf/bin/asdf"
 erlang:
   versions:
-    - 25.3.2.5
+    - 26.1.1
+    - 25.3.2.6
   dependencies:
     - build-essential
     - autoconf
     - m4
     - libncurses5-dev
-    - libwxgtk3.0-gtk3-dev
+    - libwxgtk3.2-dev
     - libgl1-mesa-dev
     - libglu1-mesa-dev
     - libpng-dev
@@ -19,6 +20,9 @@ erlang:
     - fop
 elixir:
   versions:
+    - 1.15.6-otp-26
+    - 1.15.6-otp-25
+    - 1.14.5-otp-26
     - 1.14.5-otp-25
 ruby:
   versions:
@@ -38,16 +42,18 @@ ruby:
     - libdb-dev
 nodejs:
   versions:
-    - 18.12.0
+    - 18.18.0
+    - 20.8.0
   dependencies:
     - dirmngr
     - gpg
 terraform:
   versions:
-    - 1.4.6
+    - 1.4.7
+    - 1.5.7
 yarn:
   versions:
-    - 1.22.17
+    - 1.22.19
 rust:
   versions:
-    - 1.69.0
+    - 1.72.1

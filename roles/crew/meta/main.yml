@@ -1,2 +1,4 @@
 dependencies:
-  - role: engine
+  - role: base
+  - role: vim
+  - role: tmux

@@ -1,0 +1,25 @@
+---
+###############################################################################
+# Installs tmux as seen on https://www.youtube.com/watch?v=DzNmUNvnB04
+
+- name: tmux | Installs tmux | apt
+  become: yes
+  apt:
+    state: present
+    pkg:
+    - tmux
+
+- name: tmux | Installs plugin manager | git
+  git:
+    repo: "https://github.com/tmux-plugins/tpm.git"
+    dest: "{{ ansible_env.HOME }}/.tmux/plugins/tpm"
+    clone: yes
+    update: yes
+    force: yes
+
+- name: tmux | Installs tmux config | file
+  file:
+    src: "{{ playbook_dir }}/links/tmux.conf.link"
+    dest: "{{ ansible_env.HOME }}/.config/tmux/tmux.conf"
+    state: link
+    force: yes
