@@ -14,6 +14,12 @@
     - fd-find
     - fzf
     - git
+    - gnupg2
+    - oathtool
+    - pass
+    - pass-extension-otp
+    - xclip
+
     - zsh
 
 - name: git | Links global gitignore file | file
@@ -82,7 +88,7 @@
 - name: zsh | Installs oh-my-zsh | raw
   raw: 'sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"'
   when: not oh_my_zsh_stat.stat.exists
-  
+
 - name: zsh | Install hab | git
   git:
     repo: "https://github.com/alexdesousa/hab.git"
@@ -127,3 +133,85 @@
     dest: "{{ ansible_env.HOME }}/.zshrc"
     state: link
     force: yes
+
+- name: import | Import keys | block
+  block:
+  - name: keys | Temporal keys directory | tempfile
+    tempfile:
+      prefix: "keys"
+      state: directory
+    register: keys_dir
+
+  - name: vault | Write to vault | shell
+    shell: echo "{{ vault_password }}" > "{{ keys_dir.path }}/vault-password"
+    when: keys_dir.path is defined
+
+  - name: keys | Copy encrypted keys | copy
+    copy:
+      src: "{{ playbook_dir }}/keys.tar.gz.enc"
+      dest: "{{ keys_dir.path }}/keys.tar.gz"
+      remote_src: false
+    when: keys_dir.path is defined
+
+  - name: keys | Decrypt keys | command
+    command: |
+      ansible-vault decrypt \
+      --vault-password-file "{{ keys_dir.path }}/vault-password" \
+      "{{ keys_dir.path }}/keys.tar.gz"
+    when: keys_dir.path is defined
+
+  - name: keys | Decompress keys | unarchive
+    unarchive:
+      src: "{{ keys_dir.path }}/keys.tar.gz"
+      dest: "{{ keys_dir.path }}"
+      remote_src: false
+    when: keys_dir.path is defined
+
+  - name: ssh | Import all SSH credentials | unarchive
+    unarchive:
+      src: "{{ keys_dir.path }}/keys/ssh.tar.gz"
+      dest: "{{ ansible_env.HOME }}"
+      remote_src: false
+    when: keys_dir.path is defined
+
+  - name: gpg | Import Github private key | command
+    command:
+      gpg2 \
+      --passphrase "{{ lookup('env', 'GPG_GITHUB_KEY') }}" \
+      --pinentry-mode loopback \
+      --import "{{ keys_dir.path }}/keys/github-private-key.pgp" \
+    when: keys_dir.path is defined
+
+  - name: gpg | Import Github public key | command
+    command: |
+      gpg2 \
+      --import "{{ keys_dir.path }}/keys/github-public-key.pgp" \
+    when: keys_dir.path is defined
+
+  - name: gpg | Increase trust of Github public key | shell
+    shell: echo "{{ exporter.gpg.github.public_key }}:6:" > gpg2 --import-ownertrust
+    when: keys_dir.path is defined
+
+  - name: gpg | Import Password Store private key | command
+    command:
+      gpg2 \
+      --passphrase "{{ lookup('env', 'GPG_PASSWORD_STORE_KEY') }}" \
+      --pinentry-mode loopback \
+      --import "{{ keys_dir.path }}/keys/password-store-private-key.pgp" \
+    when: keys_dir.path is defined
+
+  - name: gpg | Import Password Store public key | command
+    command: |
+      gpg2 \
+      --import "{{ keys_dir.path }}/keys/password-store-public-key.pgp" \
+    when: keys_dir.path is defined
+
+  - name: gpg | Increase trust of Password Store public key | shell
+    shell: echo "{{ exporter.gpg.password_store.public_key }}:6:" > gpg2 --import-ownertrust
+    when: keys_dir.path is defined
+
+  rescue:
+  - name: cleanup | Cleanup keys folder | file
+    file:
+      path: "{{ keys_dir.path }}"
+      state: absent

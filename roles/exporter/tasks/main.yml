@@ -2,17 +2,23 @@
 ###############################################################################
 # Exports GPG and SSH keys
 
-- name: vault | Temporal vault file | vault
+- name: vault | Temporal vault file | tempfile
   tempfile:
     prefix: "vault"
     state: file
   register: vault_file
 
-- name: keys | Temporal vault file | keys
+- name: keys | Temporal vault file | tempfile
   tempfile:
     prefix: "keys"
     state: directory
   register: keys_dir
+
+- name: keys | Temporal keys file | file
+  file:
+    path: "{{ keys_dir.path }}/keys"
+    state: directory
+  when: keys_dir.path is defined
 
 - name: exporter | Export keys | block
   block:
@@ -33,7 +39,7 @@
   - name: gpg | Export Github public key | command
     command: |
       gpg2 \
-      --output "{{ keys_dir.path }}/github-public-key.pgp" \
+      --output "{{ keys_dir.path }}/keys/github-public-key.pgp" \
       --armor \
       --export "{{ exporter.gpg.github.public_key }}"
     when: keys_dir.path is defined
@@ -43,7 +49,7 @@
       gpg2 \
       --passphrase "{{ lookup('env', 'GPG_GITHUB_KEY') }}" \
       --pinentry-mode loopback \
-      --output "{{ keys_dir.path }}/github-private-key.pgp" \
+      --output "{{ keys_dir.path }}/keys/github-private-key.pgp" \
       --armor \
       --export-secret-key "{{ exporter.gpg.github.public_key }}"
     when: keys_dir.path is defined
@@ -51,7 +57,7 @@
   - name: gpg | Export Password Store public key | command
     command: |
       gpg2 \
-      --output "{{ keys_dir.path }}/password-store-public-key.pgp" \
+      --output "{{ keys_dir.path }}/keys/password-store-public-key.pgp" \
       --armor \
       --export "{{ exporter.gpg.password_store.public_key }}"
     when: keys_dir.path is defined
@@ -61,7 +67,7 @@
       gpg2 \
       --passphrase "{{ lookup('env', 'GPG_PASSWORD_STORE_KEY') }}" \
       --pinentry-mode loopback \
-      --output "{{ keys_dir.path }}/password-store-private-key.pgp" \
+      --output "{{ keys_dir.path }}/keys/password-store-private-key.pgp" \
       --armor \
       --export-secret-key "{{ exporter.gpg.password_store.public_key }}"
     when: keys_dir.path is defined
@@ -69,12 +75,12 @@
   - name: ssh | Export all SSH credentials | archive
     archive:
       path: "{{ ansible_env.HOME }}/.ssh"
-      dest: "{{ keys_dir.path }}/ssh.tar.gz"
+      dest: "{{ keys_dir.path }}/keys/ssh.tar.gz"
     when: keys_dir.path is defined
 
   - name: keys | Compress all credentials | archive
     archive:
-      path: "{{ keys_dir.path }}"
+      path: "{{ keys_dir.path }}/keys"
       dest: "{{ playbook_dir }}/keys.tar.gz"
     when: keys_dir.path is defined
 
