@@ -1,0 +1,8 @@
+- name: Export!
+  hosts: local
+  vars_files:
+    - ./vars/secrets.yml
+  roles:
+    - role: exporter
+      tags:
+        - exporter
