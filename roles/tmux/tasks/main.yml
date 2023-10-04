@@ -18,6 +18,11 @@
     update: yes
     force: yes
 
+- name: tmux | Creates configuration folder | file
+  file:
+    path: "{{ ansible_env.HOME }}/.config/tmux"
+    state: directory
+
 - name: tmux | Installs tmux config | file
   file:
     src: "{{ playbook_dir }}/links/tmux.conf.link"

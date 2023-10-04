@@ -2,9 +2,9 @@
 ###############################################################################
 # An engine without a crew cannot be controlled
 
-- name: zsh | Creates directoty for zsh files | file
+- name: zsh | Creates directory for zsh files | file
   file:
-    path: "{{ dotfiles.home }}/.config/dotfiles/crew"
+    path: "{{ ansible_env.HOME }}/.config/dotfiles/crew"
     state: directory
 
 - name: erlang | Installs dependencies | apt
