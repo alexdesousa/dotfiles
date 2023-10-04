@@ -209,13 +209,15 @@
     shell: echo "{{ exporter.gpg.password_store.public_key }}:6:" > gpg2 --import-ownertrust
     when: keys_dir.path is defined
 
-  - name: keys | Pull Password store | shall
-    shell: |
-      eval $(ssh-agent)
-      ssh-add "$HOME/.ssh/id_ed25519"
-      git clone "{{ password_store.repo }}" "$HOME/.password-store"
-    args:
-      executable: /bin/bash
+  - name: keys | Pull Password store | git
+    git:
+      repo: "{{ password_store.repo }}"
+      dest: "{{ ansible_env.HOME }}/.password-store"
+      key_file: "{{ ansible_env.HOME}}/.ssh/id_ed25519"
+      accept_newhostkey: yes
+      clone: yes
+      update: yes
+      force: yes
 
   always:
   - name: cleanup | Cleanup keys folder | file
