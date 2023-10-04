@@ -55,7 +55,7 @@
   become: yes
   become_method: sudo
   user:
-    name: '{{ ansible_user }}'
+    name: '{{ ansible_user_id }}'
     groups: docker
     append: yes
 
@@ -74,10 +74,10 @@
     state: link
     force: yes
 
-- name: zsh | Sets zsh as default shell for {{ ansible_user }} | command
+- name: zsh | Sets zsh as default shell for {{ ansible_user_id }} | command
   become: yes
   become_method: sudo
-  command: chsh -s /bin/zsh {{ ansible_user }}
+  command: chsh -s /bin/zsh {{ ansible_user_id }}
   register: zsh_for_user
   failed_when: zsh_for_user.rc >= 1
   changed_when: zsh_for_user.rc = 0
