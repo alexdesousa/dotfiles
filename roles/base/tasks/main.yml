@@ -214,7 +214,7 @@
       repo: "{{ password_store.repo }}"
       dest: "{{ ansible_env.HOME }}/.password-store"
       key_file: "{{ ansible_env.HOME}}/.ssh/id_ed25519"
-      accept_newhostkey: yes
+      accept_hostkey: yes
       clone: yes
       update: yes
       force: yes
