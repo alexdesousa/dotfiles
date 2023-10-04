@@ -9,6 +9,7 @@
 
 - name: erlang | Installs dependencies | apt
   become: yes
+  become_method: sudo
   loop: "{{ erlang.dependencies }}"
   apt:
     name: "{{ item }}"
@@ -53,7 +54,7 @@
 
 - name: nodejs | Installs dependencies | apt
   become: yes
-  become_user: root
+  become_method: sudo
   loop: "{{ nodejs.dependencies }}"
   apt:
     name: "{{ item }}"
@@ -78,7 +79,7 @@
 
 - name: ruby | Installs dependencies | apt
   become: yes
-  become_user: root
+  become_method: sudo
   loop: "{{ ruby.dependencies }}"
   apt:
     name: "{{ item }}"

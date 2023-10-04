@@ -4,6 +4,7 @@
 
 - name: neovim | Installs dependencies | apt
   become: yes
+  become_method: sudo
   apt:
     state: present
     pkg:

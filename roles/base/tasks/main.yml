@@ -4,6 +4,7 @@
 
 - name: deps | Installs dependencies | apt
   become: yes
+  become_method: sudo
   apt:
     update_cache: yes
     state: present
@@ -19,7 +20,6 @@
     - pass
     - pass-extension-otp
     - xclip
-
     - zsh
 
 - name: git | Links global gitignore file | file
@@ -53,6 +53,7 @@
 
 - name: docker | Adds current user to docker group | user
   become: yes
+  become_method: sudo
   user:
     name: '{{ ansible_user }}'
     groups: docker
@@ -75,6 +76,7 @@
 
 - name: zsh | Sets zsh as default shell for {{ ansible_user }} | command
   become: yes
+  become_method: sudo
   command: chsh -s /bin/zsh {{ ansible_user }}
   register: zsh_for_user
   failed_when: zsh_for_user.rc >= 1

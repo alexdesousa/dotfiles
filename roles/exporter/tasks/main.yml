@@ -28,6 +28,7 @@
 
   - name: gpg | Dependencies | apt
     become: yes
+    become_method: sudo
     apt:
       pkg:
       - gnupg2

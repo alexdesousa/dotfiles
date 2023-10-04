@@ -4,6 +4,7 @@
 
 - name: tmux | Installs tmux | apt
   become: yes
+  become_method: sudo
   apt:
     state: present
     pkg:
