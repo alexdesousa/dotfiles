@@ -188,7 +188,7 @@
     when: keys_dir.path is defined
 
   - name: gpg | Increase trust of Github public key | shell
-    shell: echo "{{ exporter.gpg.github.public_key }}:6:" > gpg2 --import-ownertrust
+    shell: echo "{{ exporter.gpg.github.public_key }}:6:" | gpg2 --import-ownertrust
     when: keys_dir.path is defined
 
   - name: gpg | Import Password Store private key | command
@@ -206,7 +206,7 @@
     when: keys_dir.path is defined
 
   - name: gpg | Increase trust of Password Store public key | shell
-    shell: echo "{{ exporter.gpg.password_store.public_key }}:6:" > gpg2 --import-ownertrust
+    shell: echo "{{ exporter.gpg.password_store.public_key }}:6:" | gpg2 --import-ownertrust
     when: keys_dir.path is defined
 
   - name: keys | Pull Password store | git
