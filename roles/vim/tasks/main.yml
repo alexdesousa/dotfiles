@@ -10,6 +10,15 @@
     pkg:
     - neovim
 
+- name: nerd-font | Create folder for fonts | file
+  file:
+    path: "{{ ansible_env.HOME }}/.local/share/fonts"
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_id }}"
+    state: directory
+    mode: 0755
+    recurse: yes
+
 - name: nerd-font | Install a JetBrains Mono Nerd Font | unarchive
   unarchive:
     src: "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/JetBrainsMono.zip"
