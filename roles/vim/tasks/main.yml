@@ -58,13 +58,3 @@
     dest: "{{ ansible_env.HOME }}/.config/nvim/lua/custom/plugins.lua"
     state: link
     force: yes
-
-- name: ssh | Copy SSH config | file
-  file:
-    src: "{{ playbook_dir }}/links/ssh.config.link"
-    dest: "{{ ansible_env.HOME }}/.ssh/config"
-    owner: "{{ ansible_user_id }}"
-    group: "{{ ansible_user_id }}"
-    mode: "0664"
-    state: link
-    force: yes
