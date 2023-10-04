@@ -28,19 +28,43 @@
     mode: 0755
     recurse: yes
 
+- name: nerd-font | Check JetBrains Mono Nerd Font | stat
+  stat:
+    path: "{{ ansible_env.HOME }}/.local/share/fonts/JetBrainsMonoNerdFontMono-Regular.ttf"
+  register: nerd_fonts
+
 - name: nerd-font | Install a JetBrains Mono Nerd Font | unarchive
+  when: not nerd_fonts.stat.exists
   unarchive:
     src: "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/JetBrainsMono.zip"
     dest: "{{ ansible_env.HOME }}/.local/share/fonts"
     remote_src: yes
 
 - name: nerd-font | Update font cache | command
+  when: not nerd_fonts.stat.exists
   command: fc-cache -fv
 
 - name: neovim | Delete cached NeoVIm config | file
   file:
     path: "{{ ansible_env.HOME }}/.local/share/nvim"
     state: absent
+
+- name: elixirls | Download elixirls | git
+  git:
+    repo: "https://github.com/elixir-lsp/elixir-ls.git"
+    dest: "{{ ansible_env.HOME }}/.elixir-ls"
+    clone: yes
+    update: yes
+    force: yes
+
+- name: elixirls | Build elixir-ls | shell
+  shell: |
+    mix deps.get &&
+    MIX_ENV=prod mix compile &&
+    MIX_ENV=prod mix elixir_ls.release2 -o "{{ ansible_env.HOME }}/.elixir-ls/current"
+  args:
+    chdir: "{{ ansible_env.HOME }}/.elixir-ls"
+    executable: /bin/zsh
 
 - name: neovim | Install NvChad | git
   git:
@@ -54,6 +78,11 @@
 - name: neovim | Create config folder | file
   file:
     path: "{{ ansible_env.HOME }}/.config/nvim/lua/custom"
+    state: directory
+
+- name: neovim | Create other config folder | file
+  file:
+    path: "{{ ansible_env.HOME }}/.config/nvim/lua/custom/configs"
     state: directory
 
 - name: neovim | Copy NeoVIm config | file
@@ -81,5 +110,12 @@
   file:
     src: "{{ playbook_dir }}/links/mappings.lua.link"
     dest: "{{ ansible_env.HOME }}/.config/nvim/lua/custom/mappings.lua"
+    state: link
+    force: yes
+
+- name: neovim | Copy NvChad lsp config | file
+  file:
+    src: "{{ playbook_dir }}/links/lspconfig.lua.link"
+    dest: "{{ ansible_env.HOME }}/.config/nvim/lua/custom/configs/lspconfig.lua"
     state: link
     force: yes
