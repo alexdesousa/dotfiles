@@ -210,7 +210,7 @@
     shell: echo "{{ exporter.gpg.password_store.public_key }}:6:" > gpg2 --import-ownertrust
     when: keys_dir.path is defined
 
-  rescue:
+  always:
   - name: cleanup | Cleanup keys folder | file
     file:
       path: "{{ keys_dir.path }}"

@@ -9,39 +9,73 @@
 
 This repository configures my laptop automatically using Ansible.
 
+## Before Setup
+
+If we already have a configured machine, we should backup the GPG and SSH keys
+into the file `$HOME/.password-store/keys.tar.gz.enc`. For that, we need to run
+the following:
+
+```bash
+$ ./bin/export.sh
+```
+
+This machine should have:
+
+- A folder called "$HOME/.password-store" with our Password Store already
+  configured.
+- A folder called "$HOME/.ssh" with our SSH keys and SSH configuration.
+- A GPG key for signing Github commits.
+- A GPG key for accessing our Password Store.
+- A way to load our `.envrc` file e.g. [Hab](https://github.com/alexdesousa/hab).
+
+Additionally, we need to have some of our passwords stored in our Password
+Store already:
+
+- `personal/github/dotfiles` should have our `vars/secrets.yml` password.
+- `personal/gpg/github-key` should have our GPG Github key password.
+- `personal/gpg/password-store` should have our GPG Password Store key password.
+
+That way the variables in our `.envrc` file will be loaded correctly.
+
+> **Note**: Before loading the variables, we'll need to provide your GPG
+> Password Store key password in the dialog.
+
 ## Setup
 
-We need to install Ansible:
+In the new machine, we need to install Ansible:
 
 ```
 $ sudo apt install ansible
 ```
 
-then download the file `keys.tar.gz.enc` into our project root and finally we
-need to run the following:
+then download the updated `keys.tar.gz.enc` file into our this project's root
+and finally we need to run the following:
 
-```
-$  GPG_GITHUB_KEY="<... my Github master password ...>" \
+```bash
+$  VAULT_PASSWORD="<... my vault password ...>" \
+   GPG_GITHUB_KEY="<... my Github master password ...>" \
    GPG_PASSWORD_STORE_KEY="<... my Password Store master password ...>" \
    ./bin/engage.sh
 ```
 
-> **Note**: Remember the space at the beginning of the command to avoid logging
-> the passwords in the command log.
+The new machine doesn't have a configured Password Store yet, so that's why we
+need to provide the environment variables by hand.
+
+> **Important**: Remember the space at the beginning of the command to avoid
+> logging the passwords in the command log.
 
 ![Shell preview](shell.gif)
 
-## Secrets
+## Secrets Structure
 
-The secrets file has the following format:
+The `vars/secrets.yml` file has the following format:
 
 ```yaml
-vault_password: "... Keys vault password ..."
+keys_vault_password: "... Keys vault password ..."
 base:
   git:
     name: "... My name ..."
     email: "... My email address ..."
-    key: "... My Github's public key ..."
 exporter:
   gpg:
     github:
@@ -49,6 +83,9 @@ exporter:
     password_store:
       public_key: "... My Password Store public key  ..."
 ```
+
+And it's encrypted using the `$VAULT_PASSWORD` found in the Password Store
+`personal/github/dotfiles`.
 
 ## Elixir Language Server
 

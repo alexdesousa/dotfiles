@@ -1,7 +1,7 @@
 [user]
 	email = {{ base.git.email }}
 	name = {{ base.git.name }}
-	signingkey = {{ base.git.key }}
+	signingkey = {{ exporter.gpg.github.public_key }}
 [core]
 	editor = vim
 	excludesfile = {{ ansible_env.HOME }}/.gitignore_global

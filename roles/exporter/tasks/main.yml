@@ -23,7 +23,7 @@
 - name: exporter | Export keys | block
   block:
   - name: vault | Write to vault | shell
-    shell: echo "{{ vault_password }}" > "{{ vault_file.path }}"
+    shell: echo "{{ keys_vault_password }}" > "{{ vault_file.path }}"
     when: vault_file.path is defined
 
   - name: gpg | Dependencies | apt
@@ -94,7 +94,7 @@
   - name: pass | Rename keys | command
     command: mv "{{ playbook_dir }}/keys.tar.gz" "{{ ansible_env.HOME }}/.password-store/keys.tar.gz.enc"
 
-  rescue:
+  always:
   - name: cleanup | Cleanup keys folder | file
     file:
       path: "{{ keys_dir.path }}"
