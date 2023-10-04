@@ -128,7 +128,7 @@
   loop: "{{ yarn.versions }}"
 
 - name: yarn | Sets default Yarn version | command
-  command: "{{ asdf.bin }} global yarn {{ ruby.versions[0] }}"
+  command: "{{ asdf.bin }} global yarn {{ yarn.versions[0] }}"
 
 - name: rust | Installs Rust plugin | shell
   command: "{{ asdf.bin }} plugin-add rust"
@@ -143,7 +143,7 @@
   loop: "{{ rust.versions }}"
 
 - name: rust | Sets default Rust version | command
-  command: "{{ asdf.bin }} global rust {{ ruby.versions[0] }}"
+  command: "{{ asdf.bin }} global rust {{ rust.versions[0] }}"
 
 - name: asdf | Reshim languages | shell
   command: "{{ asdf.bin }} reshim"

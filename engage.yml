@@ -5,16 +5,13 @@
   roles:
     - role: base
       tags:
-        - engine
         - base
-    - role: vim
-      tags:
-        - engine
-        - vim
     - role: tmux
       tags:
-        - engine
         - tmux
     - role: crew
       tags:
         - crew
+    - role: vim
+      tags:
+        - vim
