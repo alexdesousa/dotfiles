@@ -136,7 +136,13 @@
     state: link
     force: yes
 
+- name: import | Check whether the keys file exist or not | stat
+  stat:
+    path: "{{ playbook_dir }}/keys.tar.gz.enc"
+  register: maybe_keys
+
 - name: import | Import keys | block
+  when: maybe_keys.stat.exists
   block:
   - name: keys | Temporal keys directory | tempfile
     tempfile:
@@ -218,6 +224,11 @@
       clone: yes
       update: yes
       force: yes
+
+  - name: keys | Cleanup installed keys | file
+    file:
+      path: "{{ playbook_dir }}/keys.tar.gz.enc"
+      state: absent
 
   always:
   - name: cleanup | Cleanup keys folder | file

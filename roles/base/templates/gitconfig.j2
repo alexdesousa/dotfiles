@@ -3,7 +3,7 @@
 	name = {{ base.git.name }}
 	signingkey = {{ exporter.gpg.github.public_key }}
 [core]
-	editor = vim
+	editor = nvim
 	excludesfile = {{ ansible_env.HOME }}/.gitignore_global
 [commit]
 	gpgsign = true

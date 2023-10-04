@@ -76,3 +76,10 @@
     dest: "{{ ansible_env.HOME }}/.config/nvim/lua/custom/plugins.lua"
     state: link
     force: yes
+
+- name: neovim | Copy NvChad mappings config | file
+  file:
+    src: "{{ playbook_dir }}/links/mappings.lua.link"
+    dest: "{{ ansible_env.HOME }}/.config/nvim/lua/custom/mappings.lua"
+    state: link
+    force: yes
