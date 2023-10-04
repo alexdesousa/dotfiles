@@ -12,7 +12,7 @@ ansible-playbook \
   -i "${PROJECT_ROOT}/hosts" "${PROJECT_ROOT}/exporter.yml" \
   --ask-become-pass \
   --vault-password-file "$CREDENTIALS/vault_password" \
-  -e "ansible_python_interpreter=$(which python3)"
+  -e "ansible_python_interpreter=/bin/python3"
 
 (
   cd "$HOME/.password-store" &&

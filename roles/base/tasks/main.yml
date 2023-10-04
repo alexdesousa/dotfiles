@@ -80,7 +80,7 @@
   command: chsh -s /bin/zsh {{ ansible_user_id }}
   register: zsh_for_user
   failed_when: zsh_for_user.rc >= 1
-  changed_when: zsh_for_user.rc = 0
+  changed_when: zsh_for_user.rc == 0
 
 - name: zsh | Checks for oh-my-zsh installation | stat
   stat:
@@ -145,7 +145,7 @@
     register: keys_dir
 
   - name: vault | Write to vault | shell
-    shell: echo "{{ vault_password }}" > "{{ keys_dir.path }}/vault-password"
+    shell: echo "{{ keys_vault_password }}" > "{{ keys_dir.path }}/vault-password"
     when: keys_dir.path is defined
 
   - name: keys | Copy encrypted keys | copy
