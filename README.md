@@ -82,6 +82,8 @@ exporter:
       public_key: "... My Github's public key ..."
     password_store:
       public_key: "... My Password Store public key  ..."
+password_store:
+  repo: "git@..."
 ```
 
 And it's encrypted using the `$VAULT_PASSWORD` found in the Password Store

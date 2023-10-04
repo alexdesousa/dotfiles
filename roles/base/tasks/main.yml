@@ -42,7 +42,7 @@
 - name: docker | Links docker.zsh file | file
   file:
     src: "{{ playbook_dir }}/links/docker.zsh.link"
-    dest: "{{ ansible_env.HOME }}/.config/dotfiles/enfine/docker.zsh"
+    dest: "{{ ansible_env.HOME }}/.config/dotfiles/engine/docker.zsh"
     state: link
     force: yes
 
@@ -211,6 +211,14 @@
   - name: gpg | Increase trust of Password Store public key | shell
     shell: echo "{{ exporter.gpg.password_store.public_key }}:6:" > gpg2 --import-ownertrust
     when: keys_dir.path is defined
+
+  - name: keys | Pull Password store | shall
+    shell: |
+      eval $(ssh-agent)
+      ssh-add "$HOME/.ssh/id_ed25519"
+      git clone "{{ password_store.repo }}" "$HOME/.password-store"
+    args:
+      executable: /bin/bash
 
   always:
   - name: cleanup | Cleanup keys folder | file
