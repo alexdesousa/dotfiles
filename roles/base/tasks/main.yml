@@ -148,11 +148,8 @@
     shell: echo "{{ keys_vault_password }}" > "{{ keys_dir.path }}/vault-password"
     when: keys_dir.path is defined
 
-  - name: keys | Copy encrypted keys | copy
-    copy:
-      src: "{{ playbook_dir }}/keys.tar.gz.enc"
-      dest: "{{ keys_dir.path }}/keys.tar.gz"
-      remote_src: false
+  - name: keys | Copy encrypted keys | command
+    command: cp "{{ playbook_dir }}/keys.tar.gz.enc" "{{ keys_dir.path }}/keys.tar.gz"
     when: keys_dir.path is defined
 
   - name: keys | Decrypt keys | command
