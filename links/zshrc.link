@@ -11,6 +11,7 @@ autoload -U +X bashcompinit && bashcompinit
 autoload -U add-zsh-hook
 
 plugins=(
+  asdf
   git
   hab
   zsh-autosuggestions
@@ -28,7 +29,6 @@ source "$ZSH/oh-my-zsh.sh"
 if [ -d "$HOME/.asdf" ]
 then
   . $HOME/.asdf/asdf.sh
-  . $HOME/.asdf/completions/asdf.bash
 fi
 
 # END: ASDF
