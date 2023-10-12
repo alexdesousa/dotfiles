@@ -89,19 +89,6 @@ password_store:
 And it's encrypted using the `$VAULT_PASSWORD` found in the Password Store
 `personal/github/dotfiles`.
 
-## Elixir Language Server
-
-After everything is done, sometimes we still need to ensure the Elixir LS is
-built:
-
-```bash
-$ cd ~/.config/nvim/plugged/elixir-ls/
-$ mix deps.get
-$ mix elixir_ls.release -o release
-```
-
-And this should finish the setup.
-
 ## Author
 
 Alexander de Sousa.
