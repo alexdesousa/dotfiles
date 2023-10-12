@@ -3,12 +3,40 @@ local plugins = {
     "christoomey/vim-tmux-navigator",
     lazy = false,
   },
+--  {
+--    "neovim/nvim-lspconfig",
+--    config = function()
+--      require "plugins.configs.lspconfig"
+--      require "custom.configs.lspconfig"
+--    end,
+--  },
   {
-    "neovim/nvim-lspconfig",
+    "elixir-tools/elixir-tools.nvim",
+    version = "*",
+    event = { "BufReadPre", "BufNewFile" },
     config = function()
-      require "plugins.configs.lspconfig"
-      require "custom.configs.lspconfig"
+      local elixir = require("elixir")
+      local elixirls = require("elixir.elixirls")
+
+      elixir.setup {
+        nextls = {enable = false},
+        credo = {enable = true},
+        elixirls = {
+          enable = true,
+          cmd = { vim.fn.expand("$HOME/.elixir-ls/current/language_server.sh") },
+          settings = elixirls.settings {
+            dialyzerEnabled = true,
+            enableTestLenses = true,
+            enableTestLenses = true,
+            suggestSpecs = true,
+          },
+        },
+      }
     end,
-  },
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+    },
+  }
 }
+
 return plugins
