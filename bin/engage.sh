@@ -8,8 +8,18 @@ CREDENTIALS="$(mktemp -d)"
 trap 'rm -rf -- "$CREDENTIALS"' EXIT
 echo "$VAULT_PASSWORD" > "$CREDENTIALS/vault_password"
 
-ansible-playbook \
-  -i "${PROJECT_ROOT}/hosts" "${PROJECT_ROOT}/engage.yml" \
-  --ask-become-pass \
-  --vault-password-file "$CREDENTIALS/vault_password" \
-  -e "ansible_python_interpreter=/bin/python3"
+if [ -z "$1" ]
+then
+  ansible-playbook \
+    -i "${PROJECT_ROOT}/hosts" "${PROJECT_ROOT}/engage.yml" \
+    --ask-become-pass \
+    --vault-password-file "$CREDENTIALS/vault_password" \
+    -e "ansible_python_interpreter=/bin/python3"
+else
+  ansible-playbook \
+    -i "${PROJECT_ROOT}/hosts" "${PROJECT_ROOT}/engage.yml" \
+    --ask-become-pass \
+    --vault-password-file "$CREDENTIALS/vault_password" \
+    -e "ansible_python_interpreter=/bin/python3" \
+    --tags "$1"
+fi

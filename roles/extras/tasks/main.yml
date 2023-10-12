@@ -1,0 +1,61 @@
+---
+###############################################################################
+# Extras
+
+- name: extras | Install dependencies | apt
+  become: yes
+  become_method: sudo
+  apt:
+    pkg:
+    - apt-transport-https
+    - ca-certificates
+    - gnupg
+    - curl
+    update_cache: yes
+
+- name: google-cloud | Download Google Cloud keyring | get_url
+  become: yes
+  become_method: sudo
+  get_url:
+    url: "https://packages.cloud.google.com/apt/doc/apt-key.gpg"
+    dest: "/usr/share/keyrings/cloud.google.asc"
+
+- name: google-cloud | Create Google Cloud repository file | apt_repository
+  become: yes
+  become_method: sudo
+  apt_repository:
+    repo: "deb [signed-by=/usr/share/keyrings/cloud.google.asc] https://packages.cloud.google.com/apt cloud-sdk main" 
+    state: present
+    filename: google-cloud-sdk
+
+- name: google-cloud | Install Google Cloud | apt
+  become: yes
+  become_method: sudo
+  apt:
+    pkg:
+    - google-cloud-sdk
+    - kubectl
+    update_cache: yes
+
+- name: spotify | Download Spotify keyring | get_url
+  become: yes
+  become_method: sudo
+  get_url:
+    url: "https://download.spotify.com/debian/pubkey_7A3A762FAFD4A51F.gpg"
+    dest: "/usr/share/keyrings/spotify.asc"
+
+- name: spotify | Create Spotify repository file | apt_repository
+  become: yes
+  become_method: sudo
+  apt_repository:
+    repo: "deb [signed-by=/usr/share/keyrings/spotify.asc] https://repository.spotify.com stable non-free"
+    state: present
+    filename: spotify
+
+- name: spotify | Install Spotify | apt
+  become: yes
+  become_method: sudo
+  apt:
+    pkg:
+    - spotify-client
+    update_cache: yes
