@@ -44,11 +44,18 @@
     url: "https://download.spotify.com/debian/pubkey_7A3A762FAFD4A51F.gpg"
     dest: "/usr/share/keyrings/spotify.asc"
 
+- name: spotify | Dearmor key | shell
+  become: yes
+  become_method: sudo
+  shell: |
+    cat /usr/share/keyrings/spotify.asc |
+      gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg
+
 - name: spotify | Create Spotify repository file | apt_repository
   become: yes
   become_method: sudo
   apt_repository:
-    repo: "deb [signed-by=/usr/share/keyrings/spotify.asc] https://repository.spotify.com stable non-free"
+    repo: "deb https://repository.spotify.com stable non-free"
     state: present
     filename: spotify
 
