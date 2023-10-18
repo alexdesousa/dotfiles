@@ -83,3 +83,14 @@
   args:
     chdir: "{{ ansible_env.HOME }}/.logseq"
     executable: /bin/zsh
+
+- name: logseq | Download second brain | git
+  git:
+    repo: "{{ second_brain.repo }}"
+    dest: "{{ ansible_env.HOME }}/.second-brain"
+    key_file: "{{ ansible_env.HOME }}/.ssh/id_ed25519"
+    accept_hostkey: yes
+    clone: yes
+    update: yes
+    force: yes
+

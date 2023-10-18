@@ -35,6 +35,28 @@ fi
 ###############################################################################
 
 ###############################################################################
+# BEGIN: Second brain and password sync
+
+if [ -f "/tmp/$USER-sync" ]
+then
+  ;
+else
+  touch "/tmp/$USER-sync" &&
+    echo "Synchronizing password store..."
+    pass git push origin master &&
+    echo "Synchronizing second brain..."
+    (cd "$HOME/.second-brain" &&
+      git add . &&
+      git commit -m ":sparkles: $(date --iso-8601=minutes) update" &&
+      git push origin master
+    ) &&
+    echo "Fully sync'd\!"
+fi
+
+# END: Second brain and password sync
+###############################################################################
+
+###############################################################################
 # BEGIN: Fish-like completions
 
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern)
