@@ -1,5 +1,29 @@
 local plugins = {
   {
+    "nvim-treesitter/nvim-treesitter",
+    opts = {
+      ensure_installed = {
+        -- elixir
+        "eex",
+        "elixir",
+        "erlang",
+        "heex",
+        "surface",
+
+        -- web dev
+        "html",
+        "css",
+        "javascript",
+        "typescript",
+        "tsx",
+        "json",
+      },
+      hightlight = {
+        enabled = true
+        },
+    },
+  },
+  {
     "christoomey/vim-tmux-navigator",
     lazy = false,
   },

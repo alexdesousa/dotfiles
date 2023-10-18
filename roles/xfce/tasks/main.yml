@@ -33,3 +33,24 @@
     dest: "{{ ansible_env.HOME }}/.config/xfce4/panel"
     state: link
     force: yes
+
+- name: xfce | Configure XFCE desktop | file
+  file:
+    src: "{{ playbook_dir }}/links/xfce4/desktop"
+    dest: "{{ ansible_env.HOME }}/.config/xfce4/desktop"
+    state: link
+    force: yes
+
+- name: xfce | Configure XFCE xfwm4 | file
+  file:
+    src: "{{ playbook_dir }}/links/xfce4/xfwm4"
+    dest: "{{ ansible_env.HOME }}/.config/xfce4/xfwm4"
+    state: link
+    force: yes
+
+- name: xfce | Configure XFCE screenshoter | file
+  file:
+    src: "{{ playbook_dir }}/links/xfce4/xfce4-screenshooter"
+    dest: "{{ ansible_env.HOME }}/.config/xfce4/xfce4-screenshooter"
+    state: link
+    force: yes
