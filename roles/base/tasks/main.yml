@@ -19,6 +19,10 @@
     - oathtool
     - pass
     - pass-extension-otp
+    - texlive-fonts-extra
+    - texlive-fonts-recommended
+    - texlive-latex-base
+    - texlive-latex-extra
     - xclip
     - zsh
 
