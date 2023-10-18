@@ -1,0 +1,35 @@
+---
+################################################################################
+# Configures XFCE
+
+- name: xfce | Install XFCE | apt
+  become: yes
+  become_method: sudo
+  apt:
+    pkg:
+    - mint-meta-xfce
+    update_cache: yes
+
+- name: xfce | Remove default XFCE configuration | file
+  file:
+    path: "{{ ansible_env.HOME }}/.config/xfce4"
+    state: absent
+
+- name: xfce | Create XFCE configuration folder | file
+  file:
+    path: "{{ ansible_env.HOME }}/.config/xfce4"
+    state: directory
+
+- name: xfce | Configure XFCE | file
+  file:
+    src: "{{ playbook_dir }}/links/xfce4/xfconf"
+    dest: "{{ ansible_env.HOME }}/.config/xfce4/xfconf"
+    state: link
+    force: yes
+
+- name: xfce | Configure XFCE panel | file
+  file:
+    src: "{{ playbook_dir }}/links/xfce4/panel"
+    dest: "{{ ansible_env.HOME }}/.config/xfce4/panel"
+    state: link
+    force: yes
