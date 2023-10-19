@@ -19,6 +19,7 @@
     - oathtool
     - pass
     - pass-extension-otp
+    - postgresql-client
     - texlive-fonts-extra
     - texlive-fonts-recommended
     - texlive-latex-base
