@@ -75,7 +75,7 @@
       <property name="enable-mpris" type="empty"/>
       <property name="mixer-command" type="empty"/>
       <property name="show-notifications" type="empty"/>
-      <property name="mpris-players" type="string" value="chromium.instance6812;firefox.instance13346;firefox.instance146586;firefox.instance149101;firefox.instance157701;firefox.instance18815;firefox.instance22571;firefox.instance2840;firefox.instance2865;firefox.instance2872;firefox.instance2879;firefox.instance2882;firefox.instance2901;firefox.instance3190;firefox.instance3200;firefox.instance4584;firefox.instance82565;spotify"/>
+      <property name="mpris-players" type="string" value="chromium.instance6812;firefox.instance13346;firefox.instance146586;firefox.instance149101;firefox.instance157701;firefox.instance18815;firefox.instance22571;firefox.instance2840;firefox.instance2865;firefox.instance2872;firefox.instance2879;firefox.instance2882;firefox.instance2901;firefox.instance3190;firefox.instance3200;firefox.instance4332;firefox.instance4584;firefox.instance82565;spotify"/>
     </property>
     <property name="plugin-13" type="empty">
       <property name="digital-time-format" type="empty"/>

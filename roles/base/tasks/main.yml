@@ -43,6 +43,21 @@
     path: "{{ ansible_env.HOME }}/.config/dotfiles/engine"
     state: directory
 
+- name: zsh | Creates default .vimrc | file
+  stat:
+    path: "/usr/share/vim/vim82/defaults.vim"
+    follow: true
+  register: defaults_vim
+
+- name: zsh | Links defaults from VIm | file
+  become: yes
+  become_method: sudo
+  file:
+    src: "/etc/vim/vimrc"
+    path: "/usr/share/vim/vim82/defaults.vim"
+    state: link
+  when: defaults_vim.stat.exists is defined and defaults_vim.stat.exists == false
+
 - name: docker | Links docker.zsh file | file
   file:
     src: "{{ playbook_dir }}/links/docker.zsh.link"
