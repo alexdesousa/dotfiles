@@ -16,6 +16,7 @@
     - fzf
     - git
     - gnupg2
+    - inotify-tools
     - oathtool
     - pass
     - pass-extension-otp

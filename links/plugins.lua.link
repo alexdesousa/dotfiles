@@ -20,7 +20,7 @@ local plugins = {
       },
       hightlight = {
         enabled = true
-        },
+      },
     },
   },
   {
