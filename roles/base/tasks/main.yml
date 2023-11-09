@@ -80,6 +80,23 @@
     groups: docker
     append: yes
 
+- name: docker | Create docker cli plugins folder | file
+  file:
+    path: "{{ ansible_env.HOME }}/.docker/cli-plugins"
+    state: directory
+
+- name: docker | Download buildx | get_url
+  get_url:
+    url: "https://github.com/docker/buildx/releases/download/v0.11.2/buildx-v0.11.2.linux-amd64"
+    dest: "{{ ansible_env.HOME }}/.docker/cli-plugins/docker-buildx"
+    mode: '0775'
+
+- name: docker | Install buildx | command
+  command: docker buildx install
+
+- name: docker | Install buildx architectures | command
+  command: docker buildx create --name multiarch --driver docker-container --use
+
 - name: asdf | Installs asdf | git
   git:
     repo: "https://github.com/asdf-vm/asdf.git"
