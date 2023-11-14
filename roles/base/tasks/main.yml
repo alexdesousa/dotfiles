@@ -27,6 +27,38 @@
     - texlive-latex-extra
     - xclip
     - zsh
+    - linux-oem-22.04c
+
+- name: framework | Enable headset mic input | lineinfile
+  become: yes
+  become_method: sudo
+  lineinfile:
+    path: "/etc/modprobe.d/alsa-base.conf"
+    state: present
+    line: "options snd-hda-intel model=dell-headset-multi"
+
+- name: framework | Enable headset mic input | lineinfile
+  become: yes
+  become_method: sudo
+  lineinfile:
+    path: "/etc/NetworkManager/conf.d/default-wifi-powersave-on.conf"
+    state: present
+    regexp: '^wifi.powersave = 3$'
+    line: "wifi.powersave = 2"
+
+- name: framework | Add GRUB options | lineinfile
+  become: yes
+  become_method: sudo
+  lineinfile:
+    path: "/etc/default/grub"
+    state: present
+    regexp: '^GRUB_CMDLINE_LINUX_DEFAULT='
+    line: 'GRUB_CMDLINE_LINUX_DEFAULT="quiet splash module_blacklist=hid_sensor_hub nvme.noacpi=1"'
+
+- name: framework | Update GRUB | command
+  become: yes
+  become_method: sudo
+  command: update-grub
 
 - name: git | Links global gitignore file | file
   file:
