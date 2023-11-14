@@ -10,6 +10,7 @@
     state: present
     pkg:
     - bat
+    - bridge-utils
     - docker
     - docker-compose
     - fd-find
@@ -17,17 +18,21 @@
     - git
     - gnupg2
     - inotify-tools
+    - libvirt-daemon-system
+    - libvirt-clients
+    - linux-oem-22.04c
     - oathtool
     - pass
     - pass-extension-otp
     - postgresql-client
+    - qemu-kvm
     - texlive-fonts-extra
     - texlive-fonts-recommended
     - texlive-latex-base
     - texlive-latex-extra
+    - virt-manager
     - xclip
     - zsh
-    - linux-oem-22.04c
 
 - name: framework | Enable headset mic input | lineinfile
   become: yes
@@ -128,6 +133,32 @@
 
 - name: docker | Install buildx architectures | command
   command: docker buildx create --name multiarch --driver docker-container --use
+  when: success == false
+  ignore_errors: yes
+
+- name: qemu | Add current user to libvirt group | user
+  become: yes
+  become_method: sudo
+  user:
+    name: '{{ ansible_user_id }}'
+    groups: libvirt
+    append: yes
+
+- name: qemu | Add current user to kvm group | user
+  become: yes
+  become_method: sudo
+  user:
+    name: '{{ ansible_user_id }}'
+    groups: kvm
+    append: yes
+
+- name: qemu | Add current user to libvirt-qemu group | user
+  become: yes
+  become_method: sudo
+  user:
+    name: '{{ ansible_user_id }}'
+    groups: libvirt-qemu
+    append: yes
 
 - name: asdf | Installs asdf | git
   git:
