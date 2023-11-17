@@ -26,6 +26,7 @@
     - pass-extension-otp
     - postgresql-client
     - qemu-kvm
+    - sshpass
     - texlive-fonts-extra
     - texlive-fonts-recommended
     - texlive-latex-base
