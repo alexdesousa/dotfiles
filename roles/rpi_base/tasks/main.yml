@@ -1,0 +1,30 @@
+---
+###############################################################################
+# Install the base tooling
+
+- name: deps | Installs dependencies | apt
+  become: yes
+  become_method: sudo
+  apt:
+    update_cache: yes
+    state: present
+    pkg:
+    - bat
+    - docker
+    - docker-compose
+    - fd-find
+    - fzf
+    - git
+    - gnupg2
+    - inotify-tools
+    - oathtool
+    - pass
+    - pass-extension-otp
+    - postgresql-client
+    - sshpass
+    - texlive-fonts-extra
+    - texlive-fonts-recommended
+    - texlive-latex-base
+    - texlive-latex-extra
+    - xclip
+    - zsh

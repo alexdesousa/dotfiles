@@ -1,0 +1,8 @@
+- name: Engage (RPI)!
+  hosts: heimdall
+  vars_files:
+    - ./vars/secrets.yml
+  roles:
+    - role: rpi_base
+      tags:
+        - rpi_base

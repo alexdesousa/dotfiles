@@ -66,6 +66,17 @@ need to provide the environment variables by hand.
 
 ![Shell preview](shell.gif)
 
+## Raspberry Pi
+
+The Raspberry Pi acts as a hub for random applications. After configuring the
+main machine, we can run the following to configure it:
+
+```bash
+$ ./bin/rpi_engage.sh
+```
+
+This will install all dependencies and applications needed.
+
 ## Secrets Structure
 
 The `vars/secrets.yml` file has the following format:
