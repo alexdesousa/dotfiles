@@ -1,0 +1,62 @@
+################################################################################
+# Installs Draw-A-UI project in the Raspberry Pi
+
+- name: draw-a-ui | Create project folder | file
+  file:
+    path: "{{ ansible_env.HOME }}/Projects"
+    state: directory
+
+- name: draw-a-ui | Clone repo | git
+  git:
+    repo: "https://github.com/SawyerHood/draw-a-ui.git"
+    dest: "{{ ansible_env.HOME }}/Projects/draw-a-ui"
+    clone: yes
+    update: yes
+    force: yes
+
+- name: draw-a-ui | Copy environment variables | template
+  template:
+    src: "env.j2"
+    dest: "{{ ansible_env.HOME }}/Projects/draw-a-ui/.env"
+
+- name: draw-a-ui | Create service | template
+  become: yes
+  become_method: sudo
+  template:
+    src: "draw-a-ui.service.j2"
+    dest: "/etc/systemd/system/draw-a-ui.service"
+
+- name: draw-a-ui | Install dependencies | shell
+  shell: source {{ asdf.src }} && npm install
+  args:
+    executable: /bin/zsh
+    chdir: "{{ ansible_env.HOME }}/Projects/draw-a-ui"
+
+- name: draw-a-ui | Build project | shell
+  shell: source {{ asdf.src }} && npm run build
+  args:
+    executable: /bin/zsh
+    chdir: "{{ ansible_env.HOME }}/Projects/draw-a-ui"
+
+- name: draw-a-ui | Enable draw-a-ui service | service
+  become: yes
+  become_method: sudo
+  systemd:
+    name: draw-a-ui
+    enabled: yes
+
+- name: draw-a-ui | Stop draw-a-ui service | service
+  become: yes
+  become_method: sudo
+  systemd:
+    name: draw-a-ui
+    state: stopped
+
+- name: draw-a-ui | Start draw-a-ui service | service
+  become: yes
+  become_method: sudo
+  systemd:
+    name: draw-a-ui
+    state: started
+    daemon_reload: yes
+

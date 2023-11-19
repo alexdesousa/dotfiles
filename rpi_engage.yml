@@ -6,3 +6,6 @@
     - role: rpi_base
       tags:
         - rpi_base
+    - role: rpi_draw_a_ui
+      tags:
+        - rpi_draw_a_ui

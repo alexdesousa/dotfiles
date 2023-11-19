@@ -1,0 +1,18 @@
+[Unit]
+Description=Draw a UI
+After=network.target
+
+[Service]
+User=pi
+WorkingDirectory=/home/pi/Projects/draw-a-ui
+ExecStart=/home/pi/.asdf/shims/npm run start -- -p 8000
+Restart=always
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=draw-a-ui
+Environment=PATH=/usr/bin:/usr/local/bin
+ExecReload=/bin/kill -s HUP $MAINPID
+KillSignal=SIGINT
+
+[Install]
+WantedBy=multi-user.target
