@@ -1,0 +1,118 @@
+---
+###############################################################################
+# Extras
+
+- name: extras | Install dependencies | apt
+  become: yes
+  become_method: sudo
+  apt:
+    pkg:
+    - apt-transport-https
+    - ca-certificates
+    - gnupg
+    - curl
+    update_cache: yes
+
+- name: google-cloud | Download Google Cloud keyring | get_url
+  become: yes
+  become_method: sudo
+  get_url:
+    url: "https://packages.cloud.google.com/apt/doc/apt-key.gpg"
+    dest: "/usr/share/keyrings/cloud.google.asc"
+
+- name: google-cloud | Create Google Cloud repository file | apt_repository
+  become: yes
+  become_method: sudo
+  apt_repository:
+    repo: "deb [signed-by=/usr/share/keyrings/cloud.google.asc] https://packages.cloud.google.com/apt cloud-sdk main" 
+    state: present
+    filename: google-cloud-sdk
+
+- name: google-cloud | Install Google Cloud | apt
+  become: yes
+  become_method: sudo
+  apt:
+    pkg:
+    - google-cloud-sdk
+    - kubectl
+    update_cache: yes
+
+- name: spotify | Add Spotify repo | shell
+  become: yes
+  become_method: sudo
+  shell: |
+    curl -sS https://download.spotify.com/debian/pubkey_7A3A762FAFD4A51F.gpg |
+      gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg;
+    echo "deb http://repository.spotify.com stable non-free" |
+      tee /etc/apt/sources.list.d/spotify.list
+  args:
+    executable: /bin/zsh
+    warn: no
+
+- name: spotify | Install Spotify | apt
+  become: yes
+  become_method: sudo
+  apt:
+    pkg:
+    - spotify-client
+    update_cache: yes
+
+- name: logseq | Download Logseq | git
+  git:
+    repo: "https://github.com/logseq/logseq.git"
+    dest: "{{ ansible_env.HOME }}/.logseq"
+    clone: yes
+    update: yes
+    force: yes
+
+- name: logseq | Install Logseq dependencies | shell
+  shell: |
+    yarn install
+  args:
+    chdir: "{{ ansible_env.HOME }}/.logseq"
+    executable: /bin/zsh
+
+- name: logseq | Delete old Logseq | file
+  file:
+    path: "{{ ansible_env.HOME }}/.logseq/static/out"
+    state: absent
+
+- name: logseq | Build Logseq | shell
+  shell: |
+    yarn release-electron
+  args:
+    chdir: "{{ ansible_env.HOME }}/.logseq"
+    executable: /bin/zsh
+
+- name: logseq | Download second brain | git
+  git:
+    repo: "{{ second_brain.repo }}"
+    dest: "{{ ansible_env.HOME }}/.second-brain"
+    key_file: "{{ ansible_env.HOME }}/.ssh/id_ed25519"
+    accept_hostkey: yes
+    clone: yes
+    update: yes
+    force: yes
+
+- name: nala | Download Volian keyring | get_url
+  become: yes
+  become_method: sudo
+  get_url:
+    url: "https://deb.volian.org/volian/scar.key"
+    dest: "/etc/apt/trusted.gpg.d/volian-archive-scar-unstable.gpg"
+
+- name: nala | Create Volian repository file | apt_repository
+  become: yes
+  become_method: sudo
+  apt_repository:
+    repo: "deb http://deb.volian.org/volian/ scar main"
+    state: present
+    filename: volian-archive-scar-unstable
+
+- name: nala | Install Nala | apt
+  become: yes
+  become_method: sudo
+  apt:
+    pkg:
+    - nala
+    update_cache: yes

@@ -1,8 +1,0 @@
-"""""""""""""""""""""""""""""""""""""""""
-" Autocommand to highlight fastlane files
-
-augroup Fastlane
-  autocmd!
-  autocmd BufNewFile,BufRead Appfile set ft=ruby
-  autocmd BufNewFile,BufRead Fastfile set ft=ruby
-augroup END

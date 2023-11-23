@@ -3,3 +3,6 @@ localhost
 
 [local:vars]
 ansible_connection=local
+
+[heimdall]
+192.168.0.2

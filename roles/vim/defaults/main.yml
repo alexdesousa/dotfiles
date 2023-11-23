@@ -1,0 +1,3 @@
+asdf:
+  src: "{{ ansible_env.HOME }}/.asdf/asdf.sh"
+  bin: "{{ ansible_env.HOME }}/.asdf/bin/asdf"

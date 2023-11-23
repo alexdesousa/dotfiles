@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Logseq
+Comment=Second Brain
+Exec=/home/etadelius/.logseq/static/out/Logseq-linux-x64/Logseq
+Icon=/home/etadelius/.logseq/static/icons/logseq.png
+Path=
+Terminal=false
+StartupNotify=false

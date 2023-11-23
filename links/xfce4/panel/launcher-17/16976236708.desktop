@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Spotify
+Comment=Spotify
+Exec=spotify %U
+Icon=spotify-client
+Path=
+Terminal=false
+StartupNotify=false

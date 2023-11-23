@@ -1,0 +1,10 @@
+local on_attach = require("plugins.configs.lspconfig").on_attach
+local capabilities = require("plugins.configs.lspconfig").capabilities
+
+local lspconfig = require "lspconfig"
+
+lspconfig.elixirls.setup{
+  on_attach = on_attach,
+  capabilities = capabilities,
+  cmd = { vim.fn.expand("$HOME/.elixir-ls/current/language_server.sh") },
+}
