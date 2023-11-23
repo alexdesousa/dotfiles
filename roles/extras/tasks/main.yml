@@ -93,3 +93,26 @@
     clone: yes
     update: yes
     force: yes
+
+- name: nala | Download Volian keyring | get_url
+  become: yes
+  become_method: sudo
+  get_url:
+    url: "https://deb.volian.org/volian/scar.key"
+    dest: "/etc/apt/trusted.gpg.d/volian-archive-scar-unstable.gpg"
+
+- name: nala | Create Volian repository file | apt_repository
+  become: yes
+  become_method: sudo
+  apt_repository:
+    repo: "deb http://deb.volian.org/volian/ scar main"
+    state: present
+    filename: volian-archive-scar-unstable
+
+- name: nala | Install Nala | apt
+  become: yes
+  become_method: sudo
+  apt:
+    pkg:
+    - nala
+    update_cache: yes
