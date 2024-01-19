@@ -11,7 +11,35 @@
     - ca-certificates
     - gnupg
     - curl
+    - tor
+    - proxychains
     update_cache: yes
+
+- name: proxychains | Remove strict chains | lineinfile
+  become: yes
+  become_method: sudo
+  lineinfile:
+    path: "/etc/proxychains.conf"
+    state: present
+    regexp: '^strict_chain$'
+    line: "#strict_chain"
+
+- name: proxychains | Set random chains | lineinfile
+  become: yes
+  become_method: sudo
+  lineinfile:
+    path: "/etc/proxychains.conf"
+    state: present
+    regexp: '^#random_chain$'
+    line: "random_chain"
+
+- name: proxychains | Add socks5 | lineinfile
+  become: yes
+  become_method: sudo
+  lineinfile:
+    path: "/etc/proxychains.conf"
+    state: present
+    line: 'socks5  127.0.0.1 9050'
 
 - name: google-cloud | Download Google Cloud keyring | get_url
   become: yes
@@ -35,6 +63,7 @@
     pkg:
     - google-cloud-sdk
     - kubectl
+    - google-cloud-sdk-gke-gcloud-auth-plugin
     update_cache: yes
 
 - name: spotify | Add Spotify repo | shell

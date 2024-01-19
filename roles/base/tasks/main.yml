@@ -24,6 +24,7 @@
     - oathtool
     - pass
     - pass-extension-otp
+    - pinentry-tty
     - postgresql-client
     - qemu-kvm
     - sshpass

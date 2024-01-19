@@ -17,6 +17,9 @@ local plugins = {
         "typescript",
         "tsx",
         "json",
+
+        -- terraform
+        "terraform",
       },
       hightlight = {
         enabled = true
