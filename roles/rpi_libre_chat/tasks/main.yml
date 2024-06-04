@@ -1,0 +1,62 @@
+################################################################################
+# Installs Libre Chat project in the Raspberry Pi
+
+- name: libre-chat | Clone repo | git
+  git:
+    repo: "https://github.com/danny-avila/LibreChat.git"
+    dest: "{{ ansible_env.HOME }}/docker-compose/libre-chat"
+    clone: yes
+    update: yes
+    force: yes
+
+- name: libre-chat | Copy environment variables | template
+  template:
+    src: "env.j2"
+    dest: "{{ ansible_env.HOME }}/docker-compose/libre-chat/.env"
+
+- name: libre-chat | Copy librechat config | template
+  template:
+    src: "librechat.yaml.j2"
+    dest: "{{ ansible_env.HOME }}/docker-compose/libre-chat/librechat.yaml"
+
+- name: libre-chat | Copy docker compose overrides | template
+  template:
+    src: "docker-compose.override.yml.j2"
+    dest: "{{ ansible_env.HOME }}/docker-compose/libre-chat/docker-compose.override.yml"
+
+- name: libre-chat | Create logs folder | file
+  file:
+    path: "{{ ansible_env.HOME }}/docker-compose/libre-chat/logs"
+    state: directory
+
+- name: libre-chat | Create images folder | file
+  file:
+    path: "{{ ansible_env.HOME }}/docker-compose/libre-chat/images"
+    state: directory
+
+- name: libre-chat | Create data-node folder | file
+  file:
+    path: "{{ ansible_env.HOME }}/docker-compose/libre-chat/data-node"
+
+- name: libre-chat | Enable libre-chat service | service
+  become: yes
+  become_method: sudo
+  systemd:
+    name: docker-compose@libre-chat
+    enabled: yes
+
+- name: libre-chat | Stop libre-chat service | service
+  become: yes
+  become_method: sudo
+  systemd:
+    name: docker-compose@libre-chat
+    state: stopped
+
+- name: libre-chat | Start libre-chat service | service
+  become: yes
+  become_method: sudo
+  systemd:
+    name: docker-compose@libre-chat
+    state: started
+    daemon_reload: yes
+

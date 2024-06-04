@@ -6,6 +6,9 @@
     - role: rpi_base
       tags:
         - rpi_base
+    - role: rpi_libre_chat
+      tags:
+        - rpi_libre_chat
     - role: rpi_draw_a_ui
       tags:
         - rpi_draw_a_ui

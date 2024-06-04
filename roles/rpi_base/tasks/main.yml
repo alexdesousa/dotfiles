@@ -114,6 +114,18 @@
   when: success == false
   ignore_errors: yes
 
+- name: docker-compose | Create base folder for services | file
+  file:
+    path: "{{ ansible_env.HOME }}/docker-compose"
+    state: directory
+
+- name: docker-compose | Create general systemd service | template
+  become: yes
+  become_method: sudo
+  template:
+    src: "docker-compose.service.j2"
+    dest: "/etc/systemd/system/docker-compose@.service"
+
 - name: asdf | Installs asdf | git
   git:
     repo: "https://github.com/asdf-vm/asdf.git"
@@ -460,6 +472,9 @@
     dest: "{{ ansible_env.HOME }}/.config/nvim/lua/custom/configs/lspconfig.lua"
     remote_src: no
     force: yes
+
+################################################################################
+# Nala
 
 - name: nala | Download Volian keyring | get_url
   become: yes
