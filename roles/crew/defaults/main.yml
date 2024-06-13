@@ -69,3 +69,6 @@ clojure:
     - git
     - rlwrap
     - openjdk-11-jdk
+golang:
+  versions:
+    - 1.22.4

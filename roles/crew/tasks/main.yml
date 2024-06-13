@@ -160,5 +160,20 @@
 - name: clojure | Sets default Clojure version | command
   command: "{{ asdf.bin }} global clojure {{ clojure.versions[0] }}"
 
+- name: golang | Installs Go plugin | shell
+  command: "{{ asdf.bin }} plugin-add golang"
+  register: golang_add
+  failed_when: golang_add.rc == 1
+
+- name: golang | Updates Go plugin | shell
+  command: "{{ asdf.bin }} plugin-update golang"
+
+- name: golang | Installs Go versions | command
+  command: "{{ asdf.bin }} install golang {{ item }}"
+  loop: "{{ clojure.versions }}"
+
+- name: golang | Sets default Go version | command
+  command: "{{ asdf.bin }} global golang {{ clojure.versions[0] }}"
+
 - name: asdf | Reshim languages | shell
   command: "{{ asdf.bin }} reshim"

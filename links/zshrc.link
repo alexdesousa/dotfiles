@@ -31,6 +31,7 @@ source "$ZSH/oh-my-zsh.sh"
 if [ -d "$HOME/.asdf" ]
 then
   . $HOME/.asdf/asdf.sh
+  . $HOME/.asdf/plugins/golang/set-env.zsh
 fi
 
 # END: ASDF
