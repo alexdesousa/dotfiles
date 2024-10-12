@@ -1,0 +1,15 @@
+local M = {}
+
+M.ui = {
+  hl_override = {
+    Normal = {
+      bg = 'none',
+    },
+  },
+  theme = 'catppuccin',
+  transparency = true,
+}
+
+M.plugins = 'custom.plugins'
+
+return M

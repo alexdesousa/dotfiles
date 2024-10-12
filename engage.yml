@@ -3,9 +3,21 @@
   vars_files:
     - ./vars/secrets.yml
   roles:
-    - role: engine
+    - role: base
       tags:
-        - engine
+        - base
+    - role: tmux
+      tags:
+        - tmux
     - role: crew
       tags:
         - crew
+    - role: vim
+      tags:
+        - vim
+    - role: extras
+      tags:
+        - extras
+    - role: xfce
+      tags:
+        - xfce

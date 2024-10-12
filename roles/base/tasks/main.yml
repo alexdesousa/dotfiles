@@ -1,0 +1,347 @@
+---
+###############################################################################
+# Install the base tooling
+
+- name: deps | Installs dependencies | apt
+  become: yes
+  become_method: sudo
+  apt:
+    update_cache: yes
+    state: present
+    pkg:
+    - bat
+    - bridge-utils
+    - docker
+    - docker-compose
+    - fd-find
+    - fzf
+    - git
+    - gnupg2
+    - inotify-tools
+    - libvirt-daemon-system
+    - libvirt-clients
+    - linux-oem-22.04c
+    - oathtool
+    - pass
+    - pass-extension-otp
+    - pinentry-tty
+    - postgresql-client
+    - qemu-kvm
+    - sshpass
+    - texlive-fonts-extra
+    - texlive-fonts-recommended
+    - texlive-latex-base
+    - texlive-latex-extra
+    - virt-manager
+    - xclip
+    - zsh
+
+- name: framework | Enable headset mic input | lineinfile
+  become: yes
+  become_method: sudo
+  lineinfile:
+    path: "/etc/modprobe.d/alsa-base.conf"
+    state: present
+    line: "options snd-hda-intel model=dell-headset-multi"
+
+- name: framework | Enable headset mic input | lineinfile
+  become: yes
+  become_method: sudo
+  lineinfile:
+    path: "/etc/NetworkManager/conf.d/default-wifi-powersave-on.conf"
+    state: present
+    regexp: '^wifi.powersave = 3$'
+    line: "wifi.powersave = 2"
+
+- name: framework | Add GRUB options | lineinfile
+  become: yes
+  become_method: sudo
+  lineinfile:
+    path: "/etc/default/grub"
+    state: present
+    regexp: '^GRUB_CMDLINE_LINUX_DEFAULT='
+    line: 'GRUB_CMDLINE_LINUX_DEFAULT="quiet splash module_blacklist=hid_sensor_hub nvme.noacpi=1"'
+
+- name: framework | Update GRUB | command
+  become: yes
+  become_method: sudo
+  command: update-grub
+
+- name: git | Links global gitignore file | file
+  file:
+    src: "{{ playbook_dir }}/links/gitignore_global.link"
+    dest: "{{ ansible_env.HOME }}/.gitignore_global"
+    state: link
+    force: yes
+
+- name: git | Copies git config | template
+  template:
+    src: "gitconfig.j2"
+    dest: "{{ ansible_env.HOME }}/.gitconfig"
+
+- name: zsh | Creates directory for zsh files | file
+  file:
+    path: "{{ ansible_env.HOME }}/.config/dotfiles/engine"
+    state: directory
+
+- name: zsh | Creates default .vimrc | file
+  stat:
+    path: "/usr/share/vim/vim82/defaults.vim"
+    follow: true
+  register: defaults_vim
+
+- name: zsh | Links defaults from VIm | file
+  become: yes
+  become_method: sudo
+  file:
+    src: "/etc/vim/vimrc"
+    path: "/usr/share/vim/vim82/defaults.vim"
+    state: link
+  when: defaults_vim.stat.exists is defined and defaults_vim.stat.exists == false
+
+- name: docker | Links docker.zsh file | file
+  file:
+    src: "{{ playbook_dir }}/links/docker.zsh.link"
+    dest: "{{ ansible_env.HOME }}/.config/dotfiles/engine/docker.zsh"
+    state: link
+    force: yes
+
+- name: docker | Adds docker group | group
+  group:
+    name: docker
+    state: present
+
+- name: docker | Adds current user to docker group | user
+  become: yes
+  become_method: sudo
+  user:
+    name: '{{ ansible_user_id }}'
+    groups: docker
+    append: yes
+
+- name: docker | Create docker cli plugins folder | file
+  file:
+    path: "{{ ansible_env.HOME }}/.docker/cli-plugins"
+    state: directory
+
+- name: docker | Download buildx | get_url
+  get_url:
+    url: "https://github.com/docker/buildx/releases/download/v0.11.2/buildx-v0.11.2.linux-amd64"
+    dest: "{{ ansible_env.HOME }}/.docker/cli-plugins/docker-buildx"
+    mode: '0775'
+
+- name: docker | Install buildx | command
+  command: docker buildx install
+
+- name: docker | Install buildx architectures | command
+  command: docker buildx create --name multiarch --driver docker-container --use
+  when: success == false
+  ignore_errors: yes
+
+- name: qemu | Add current user to libvirt group | user
+  become: yes
+  become_method: sudo
+  user:
+    name: '{{ ansible_user_id }}'
+    groups: libvirt
+    append: yes
+
+- name: qemu | Add current user to kvm group | user
+  become: yes
+  become_method: sudo
+  user:
+    name: '{{ ansible_user_id }}'
+    groups: kvm
+    append: yes
+
+- name: qemu | Add current user to libvirt-qemu group | user
+  become: yes
+  become_method: sudo
+  user:
+    name: '{{ ansible_user_id }}'
+    groups: libvirt-qemu
+    append: yes
+
+- name: asdf | Installs asdf | git
+  git:
+    repo: "https://github.com/asdf-vm/asdf.git"
+    dest: "{{ ansible_env.HOME }}/.asdf"
+    clone: yes
+    update: yes
+    force: yes
+
+- name: fzf | Links fzf.zsh file | file
+  file:
+    src: "{{ playbook_dir }}/links/fzf.zsh.link"
+    dest: "{{ ansible_env.HOME }}/.config/dotfiles/engine/fzf.zsh"
+    state: link
+    force: yes
+
+- name: zsh | Sets zsh as default shell for {{ ansible_user_id }} | command
+  become: yes
+  become_method: sudo
+  command: chsh -s /bin/zsh {{ ansible_user_id }}
+  register: zsh_for_user
+  failed_when: zsh_for_user.rc >= 1
+  changed_when: zsh_for_user.rc == 0
+
+- name: zsh | Checks for oh-my-zsh installation | stat
+  stat:
+    path: "{{ ansible_env.HOME }}/.oh-my-zsh"
+  register: oh_my_zsh_stat
+
+- name: zsh | Installs oh-my-zsh | raw
+  raw: 'sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"'
+  when: not oh_my_zsh_stat.stat.exists
+
+- name: zsh | Install hab | git
+  git:
+    repo: "https://github.com/alexdesousa/hab.git"
+    dest: "{{ ansible_env.HOME }}/.oh-my-zsh/custom/plugins/hab"
+    clone: yes
+    update: yes
+    force: yes
+
+- name: zsh | Install zsh-syntax-highlighting | git
+  git:
+    repo: "https://github.com/zsh-users/zsh-syntax-highlighting.git"
+    dest: "{{ ansible_env.HOME }}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"
+    clone: yes
+    update: yes
+    force: yes
+
+- name: zsh | Install zsh-autosuggestions | git
+  git:
+    repo: "https://github.com/zsh-users/zsh-autosuggestions.git"
+    dest: "{{ ansible_env.HOME }}/.oh-my-zsh/custom/plugins/zsh-autosuggestions"
+    clone: yes
+    update: yes
+    force: yes
+
+- name: zsh | Links aliases.zsh file | file
+  file:
+    src: "{{ playbook_dir }}/links/aliases.zsh.link"
+    dest: "{{ ansible_env.HOME }}/.config/dotfiles/engine/aliases.zsh"
+    state: link
+    force: yes
+
+- name: zsh | Install Etadelius theme | file
+  file:
+    src: "{{ playbook_dir }}/links/etadelius.zsh-theme.link"
+    dest: "{{ ansible_env.HOME }}/.oh-my-zsh/themes/etadelius.zsh-theme"
+    state: link
+    force: yes
+
+- name: zsh | Links .zshrc file | file
+  file:
+    src: "{{ playbook_dir }}/links/zshrc.link"
+    dest: "{{ ansible_env.HOME }}/.zshrc"
+    state: link
+    force: yes
+
+- name: import | Check whether the keys file exist or not | stat
+  stat:
+    path: "{{ playbook_dir }}/keys.tar.gz.enc"
+  register: maybe_keys
+
+- name: import | Import keys | block
+  when: maybe_keys.stat.exists
+  block:
+  - name: keys | Temporal keys directory | tempfile
+    tempfile:
+      prefix: "keys"
+      state: directory
+    register: keys_dir
+
+  - name: vault | Write to vault | shell
+    shell: echo "{{ keys_vault_password }}" > "{{ keys_dir.path }}/vault-password"
+    when: keys_dir.path is defined
+
+  - name: keys | Copy encrypted keys | command
+    command: cp "{{ playbook_dir }}/keys.tar.gz.enc" "{{ keys_dir.path }}/keys.tar.gz"
+    when: keys_dir.path is defined
+
+  - name: keys | Decrypt keys | command
+    command: |
+      ansible-vault decrypt \
+      --vault-password-file "{{ keys_dir.path }}/vault-password" \
+      "{{ keys_dir.path }}/keys.tar.gz"
+    when: keys_dir.path is defined
+
+  - name: keys | Decompress keys | unarchive
+    unarchive:
+      src: "{{ keys_dir.path }}/keys.tar.gz"
+      dest: "{{ keys_dir.path }}"
+      remote_src: false
+    when: keys_dir.path is defined
+
+  - name: ssh | Import all SSH credentials | unarchive
+    unarchive:
+      src: "{{ keys_dir.path }}/keys/ssh.tar.gz"
+      dest: "{{ ansible_env.HOME }}"
+      remote_src: false
+    when: keys_dir.path is defined
+
+  - name: gpg | Import Github private key | command
+    command:
+      gpg2 \
+      --passphrase "{{ lookup('env', 'GPG_GITHUB_KEY') }}" \
+      --pinentry-mode loopback \
+      --import "{{ keys_dir.path }}/keys/github-private-key.pgp" \
+    when: keys_dir.path is defined
+
+  - name: gpg | Import Github public key | command
+    command: |
+      gpg2 \
+      --import "{{ keys_dir.path }}/keys/github-public-key.pgp" \
+    when: keys_dir.path is defined
+
+  - name: gpg | Increase trust of Github public key | shell
+    shell: echo "{{ exporter.gpg.github.public_key }}:6:" | gpg2 --import-ownertrust
+    when: keys_dir.path is defined
+
+  - name: gpg | Import Password Store private key | command
+    command:
+      gpg2 \
+      --passphrase "{{ lookup('env', 'GPG_PASSWORD_STORE_KEY') }}" \
+      --pinentry-mode loopback \
+      --import "{{ keys_dir.path }}/keys/password-store-private-key.pgp" \
+    when: keys_dir.path is defined
+
+  - name: gpg | Import Password Store public key | command
+    command: |
+      gpg2 \
+      --import "{{ keys_dir.path }}/keys/password-store-public-key.pgp" \
+    when: keys_dir.path is defined
+
+  - name: gpg | Increase trust of Password Store public key | shell
+    shell: echo "{{ exporter.gpg.password_store.public_key }}:6:" | gpg2 --import-ownertrust
+    when: keys_dir.path is defined
+
+  - name: keys | Pull Password store | git
+    git:
+      repo: "{{ password_store.repo }}"
+      dest: "{{ ansible_env.HOME }}/.password-store"
+      key_file: "{{ ansible_env.HOME}}/.ssh/id_ed25519"
+      accept_hostkey: yes
+      clone: yes
+      update: yes
+      force: yes
+
+  - name: gpg | Links gpg-agent.conf file | file
+    file:
+      src: "{{ playbook_dir }}/links/gpg-agent.conf.link"
+      dest: "{{ ansible_env.HOME }}/.gnupg/gpg-agent.conf"
+      state: link
+      force: yes
+
+  - name: keys | Cleanup installed keys | file
+    file:
+      path: "{{ playbook_dir }}/keys.tar.gz.enc"
+      state: absent
+
+  always:
+  - name: cleanup | Cleanup keys folder | file
+    file:
+      path: "{{ keys_dir.path }}"
+      state: absent

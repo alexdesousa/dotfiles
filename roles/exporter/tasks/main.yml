@@ -1,0 +1,112 @@
+---
+###############################################################################
+# Exports GPG and SSH keys
+
+- name: vault | Temporal vault file | tempfile
+  tempfile:
+    prefix: "vault"
+    state: file
+  register: vault_file
+
+- name: keys | Temporal vault file | tempfile
+  tempfile:
+    prefix: "keys"
+    state: directory
+  register: keys_dir
+
+- name: keys | Temporal keys file | file
+  file:
+    path: "{{ keys_dir.path }}/keys"
+    state: directory
+  when: keys_dir.path is defined
+
+- name: exporter | Export keys | block
+  block:
+  - name: vault | Write to vault | shell
+    shell: echo "{{ keys_vault_password }}" > "{{ vault_file.path }}"
+    when: vault_file.path is defined
+
+  - name: gpg | Dependencies | apt
+    become: yes
+    become_method: sudo
+    apt:
+      pkg:
+      - gnupg2
+      - oathtool
+      - pass
+      - pass-extension-otp
+      - xclip
+
+  - name: gpg | Export Github public key | command
+    command: |
+      gpg2 \
+      --output "{{ keys_dir.path }}/keys/github-public-key.pgp" \
+      --armor \
+      --export "{{ exporter.gpg.github.public_key }}"
+    when: keys_dir.path is defined
+
+  - name: gpg | Export Github private key | command
+    command:
+      gpg2 \
+      --passphrase "{{ lookup('env', 'GPG_GITHUB_KEY') }}" \
+      --pinentry-mode loopback \
+      --output "{{ keys_dir.path }}/keys/github-private-key.pgp" \
+      --armor \
+      --export-secret-key "{{ exporter.gpg.github.public_key }}"
+    when: keys_dir.path is defined
+
+  - name: gpg | Export Password Store public key | command
+    command: |
+      gpg2 \
+      --output "{{ keys_dir.path }}/keys/password-store-public-key.pgp" \
+      --armor \
+      --export "{{ exporter.gpg.password_store.public_key }}"
+    when: keys_dir.path is defined
+
+  - name: gpg | Export Password Store private key | command
+    command:
+      gpg2 \
+      --passphrase "{{ lookup('env', 'GPG_PASSWORD_STORE_KEY') }}" \
+      --pinentry-mode loopback \
+      --output "{{ keys_dir.path }}/keys/password-store-private-key.pgp" \
+      --armor \
+      --export-secret-key "{{ exporter.gpg.password_store.public_key }}"
+    when: keys_dir.path is defined
+
+  - name: ssh | Export all SSH credentials | archive
+    archive:
+      path: "{{ ansible_env.HOME }}/.ssh"
+      dest: "{{ keys_dir.path }}/keys/ssh.tar.gz"
+    when: keys_dir.path is defined
+
+  - name: keys | Compress all credentials | archive
+    archive:
+      path: "{{ keys_dir.path }}/keys"
+      dest: "{{ playbook_dir }}/keys.tar.gz"
+    when: keys_dir.path is defined
+
+  - name: keys | Encrypt keys | command
+    command: |
+      ansible-vault encrypt \
+      --vault-password-file "{{ vault_file.path }}" \
+      "{{ playbook_dir }}/keys.tar.gz"
+    when: vault_file.path is defined
+
+  - name: pass | Rename keys | command
+    command: mv "{{ playbook_dir }}/keys.tar.gz" "{{ ansible_env.HOME }}/.password-store/keys.tar.gz.enc"
+
+  always:
+  - name: cleanup | Cleanup keys folder | file
+    file:
+      path: "{{ keys_dir.path }}"
+      state: absent
+
+  - name: cleanup | Cleanup vault file | file
+    file:
+      path: "{{ vault_file.path }}"
+      state: absent
+
+  - name: cleanup | Cleanup vault file | file
+    file:
+      path: "{{ playbook_dir }}/keys.tar.gz"
+      state: absent

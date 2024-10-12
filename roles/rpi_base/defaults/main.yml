@@ -51,24 +51,9 @@ nodejs:
   dependencies:
     - dirmngr
     - gpg
-terraform:
-  versions:
-    - 1.4.7
-    - 1.5.7
 yarn:
   versions:
     - 1.22.19
 rust:
   versions:
     - 1.72.1
-clojure:
-  versions:
-    - 1.10.1.763
-  dependencies:
-    - curl
-    - git
-    - rlwrap
-    - openjdk-11-jdk
-golang:
-  versions:
-    - 1.22.4

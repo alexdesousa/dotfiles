@@ -1,0 +1,500 @@
+---
+###############################################################################
+# Install the base tooling
+
+- name: deps | Installs dependencies | apt
+  become: yes
+  become_method: sudo
+  apt:
+    update_cache: yes
+    state: present
+    pkg:
+    - bat
+    - ca-certificates
+    - curl
+    - fd-find
+    - fzf
+    - git
+    - gnupg
+    - gnupg2
+    - inotify-tools
+    - neovim
+    - oathtool
+    - pass
+    - pass-extension-otp
+    - postgresql-client
+    - sshpass
+    - texlive-fonts-extra
+    - texlive-fonts-recommended
+    - texlive-latex-base
+    - texlive-latex-extra
+    - xclip
+    - zsh
+
+- name: docker | Add docker GPG key | shell
+  become: yes
+  become_method: sudo
+  shell: |
+    install -m 0755 -d /etc/apt/keyrings;
+    curl -fsSL https://download.docker.com/linux/debian/gpg |
+      gpg --yes --dearmor -o /etc/apt/keyrings/docker.gpg;
+    chmod a+r /etc/apt/keyrings/docker.gpg;
+    echo "deb [arch=\"arm64\" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian bullseye stable" |
+      tee /etc/apt/sources.list.d/docker.list
+  args:
+    warn: no
+
+- name: docker | Installs docker | apt
+  become: yes
+  become_method: sudo
+  apt:
+    update_cache: yes
+    state: present
+    pkg:
+    - docker-ce
+    - docker-ce-cli
+    - containerd.io
+    - docker-buildx-plugin
+    - docker-compose-plugin
+
+- name: git | Links global gitignore file | copy
+  copy:
+    src: "{{ playbook_dir }}/links/gitignore_global.link"
+    dest: "{{ ansible_env.HOME }}/.gitignore_global"
+    remote_src: no
+    force: yes
+
+- name: git | Copies git config | template
+  template:
+    src: "gitconfig.j2"
+    dest: "{{ ansible_env.HOME }}/.gitconfig"
+
+- name: zsh | Creates directory for zsh files | file
+  file:
+    path: "{{ ansible_env.HOME }}/.config/dotfiles/engine"
+    state: directory
+
+- name: zsh | Creates default .vimrc | file
+  stat:
+    path: "/usr/share/vim/vim82/defaults.vim"
+    follow: true
+  register: defaults_vim
+
+- name: zsh | Links defaults from VIm | file
+  become: yes
+  become_method: sudo
+  file:
+    src: "/etc/vim/vimrc"
+    path: "/usr/share/vim/vim82/defaults.vim"
+    state: link
+  when: defaults_vim.stat.exists is defined and defaults_vim.stat.exists == false
+
+- name: docker | Links docker.zsh file | copy
+  copy:
+    src: "{{ playbook_dir }}/links/docker.zsh.link"
+    dest: "{{ ansible_env.HOME }}/.config/dotfiles/engine/docker.zsh"
+    remote_src: no
+    force: yes
+
+- name: docker | Adds docker group | group
+  group:
+    name: docker
+    state: present
+
+- name: docker | Adds current user to docker group | user
+  become: yes
+  become_method: sudo
+  user:
+    name: '{{ ansible_user_id }}'
+    groups: docker
+    append: yes
+
+- name: docker | Install buildx architectures | command
+  command: docker buildx create --name multiarch --driver docker-container --use
+  when: success == false
+  ignore_errors: yes
+
+- name: docker-compose | Create base folder for services | file
+  file:
+    path: "{{ ansible_env.HOME }}/docker-compose"
+    state: directory
+
+- name: docker-compose | Create general systemd service | template
+  become: yes
+  become_method: sudo
+  template:
+    src: "docker-compose.service.j2"
+    dest: "/etc/systemd/system/docker-compose@.service"
+
+- name: asdf | Installs asdf | git
+  git:
+    repo: "https://github.com/asdf-vm/asdf.git"
+    dest: "{{ ansible_env.HOME }}/.asdf"
+    clone: yes
+    update: yes
+    force: yes
+
+- name: fzf | Links fzf.zsh file | copy
+  copy:
+    src: "{{ playbook_dir }}/links/fzf.zsh.link"
+    dest: "{{ ansible_env.HOME }}/.config/dotfiles/engine/fzf.zsh"
+    remote_src: no
+    force: yes
+
+- name: zsh | Sets zsh as default shell for {{ ansible_user_id }} | command
+  become: yes
+  become_method: sudo
+  command: chsh -s /bin/zsh {{ ansible_user_id }}
+  register: zsh_for_user
+  failed_when: zsh_for_user.rc >= 1
+  changed_when: zsh_for_user.rc == 0
+
+- name: zsh | Checks for oh-my-zsh installation | stat
+  stat:
+    path: "{{ ansible_env.HOME }}/.oh-my-zsh"
+  register: oh_my_zsh_stat
+
+- name: zsh | Installs oh-my-zsh | raw
+  raw: 'sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"'
+  when: not oh_my_zsh_stat.stat.exists
+
+- name: zsh | Install hab | git
+  git:
+    repo: "https://github.com/alexdesousa/hab.git"
+    dest: "{{ ansible_env.HOME }}/.oh-my-zsh/custom/plugins/hab"
+    clone: yes
+    update: yes
+    force: yes
+
+- name: zsh | Install zsh-syntax-highlighting | git
+  git:
+    repo: "https://github.com/zsh-users/zsh-syntax-highlighting.git"
+    dest: "{{ ansible_env.HOME }}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"
+    clone: yes
+    update: yes
+    force: yes
+
+- name: zsh | Install zsh-autosuggestions | git
+  git:
+    repo: "https://github.com/zsh-users/zsh-autosuggestions.git"
+    dest: "{{ ansible_env.HOME }}/.oh-my-zsh/custom/plugins/zsh-autosuggestions"
+    clone: yes
+    update: yes
+    force: yes
+
+- name: zsh | Links aliases.zsh file | copy
+  copy:
+    src: "{{ playbook_dir }}/links/aliases.zsh.link"
+    dest: "{{ ansible_env.HOME }}/.config/dotfiles/engine/aliases.zsh"
+    remote_src: no
+    force: yes
+
+- name: zsh | Install Etadelius theme | copy
+  copy:
+    src: "{{ playbook_dir }}/links/etadelius.zsh-theme.link"
+    dest: "{{ ansible_env.HOME }}/.oh-my-zsh/themes/etadelius.zsh-theme"
+    remote_src: no
+    force: yes
+
+- name: zsh | Links .zshrc file | copy
+  copy:
+    src: "{{ playbook_dir }}/links/zshrc.link"
+    dest: "{{ ansible_env.HOME }}/.zshrc"
+    remote_src: no
+    force: yes
+
+################################################################################
+# TMUX
+
+- name: tmux | Installs tmux | apt
+  become: yes
+  become_method: sudo
+  apt:
+    state: present
+    pkg:
+    - tmux
+
+- name: tmux | Installs plugin manager | git
+  git:
+    repo: "https://github.com/tmux-plugins/tpm.git"
+    dest: "{{ ansible_env.HOME }}/.tmux/plugins/tpm"
+    clone: yes
+    update: yes
+    force: yes
+
+- name: tmux | Creates configuration folder | file
+  file:
+    path: "{{ ansible_env.HOME }}/.config/tmux"
+    state: directory
+
+- name: tmux | Installs tmux config | copy
+  copy:
+    src: "{{ playbook_dir }}/links/tmux.conf.link"
+    dest: "{{ ansible_env.HOME }}/.config/tmux/tmux.conf"
+    remote_src: no
+    force: yes
+
+################################################################################
+# Crew
+
+- name: zsh | Creates directory for zsh files | file
+  file:
+    path: "{{ ansible_env.HOME }}/.config/dotfiles/crew"
+    state: directory
+
+- name: erlang | Installs dependencies | apt
+  become: yes
+  become_method: sudo
+  loop: "{{ erlang.dependencies }}"
+  apt:
+    name: "{{ item }}"
+    state: present
+
+- name: erlang | Installs Erlang plugin | shell
+  command: "{{ asdf.bin }} plugin-add erlang"
+  register: erlang_add
+  failed_when: erlang_add.rc == 1
+
+- name: erlang | Updates Erlang plugin | shell
+  command: "{{ asdf.bin }} plugin-update erlang"
+
+- name: erlang | Installs Erlang versions | command
+  command: "{{ asdf.bin }} install erlang {{ item }}"
+  loop: "{{ erlang.versions }}"
+
+- name: erlang | Sets default Erlang version | command
+  command: "{{ asdf.bin }} global erlang {{ erlang.versions[0] }}"
+
+- name: erlang | Links erlang.zsh file | copy
+  copy:
+    src: "{{ playbook_dir }}/links/erlang.zsh.link"
+    dest: "{{ ansible_env.HOME }}/.config/dotfiles/crew/erlang.zsh"
+    remote_src: no
+    force: yes
+
+- name: elixir | Installs Elixir plugin | shell
+  command: "{{ asdf.bin }} plugin-add elixir"
+  register: elixir_add
+  failed_when: elixir_add.rc == 1
+
+- name: elixir | Updates Elixir plugin | shell
+  command: "{{ asdf.bin }} plugin-update elixir"
+
+- name: elixir | Installs Elixir versions | command
+  command: "{{ asdf.bin }} install elixir {{ item }}"
+  loop: "{{ elixir.versions }}"
+
+- name: elixir | Sets default Elixir version | command
+  command: "{{ asdf.bin }} global elixir {{ elixir.versions[0] }}"
+
+- name: nodejs | Installs dependencies | apt
+  become: yes
+  become_method: sudo
+  loop: "{{ nodejs.dependencies }}"
+  apt:
+    name: "{{ item }}"
+    state: present
+
+- name: nodejs | Installs NodeJS plugin | shell
+  command: "{{ asdf.bin }} plugin-add nodejs"
+  register: nodejs_add
+  failed_when: nodejs_add.rc == 1
+
+- name: nodejs | Updates NodeJS plugin | shell
+  command: "{{ asdf.bin }} plugin-update nodejs"
+
+- name: nodejs | Installs NodeJS versions | command
+  shell: "source {{ asdf.src }} && {{ asdf.bin }} install nodejs {{ item }}"
+  args:
+    executable: /bin/zsh
+  loop: "{{ nodejs.versions }}"
+
+- name: nodejs | Sets default NodeJS version | command
+  command: "{{ asdf.bin }} global nodejs {{ nodejs.versions[0] }}"
+
+- name: ruby | Installs dependencies | apt
+  become: yes
+  become_method: sudo
+  loop: "{{ ruby.dependencies }}"
+  apt:
+    name: "{{ item }}"
+    state: present
+
+- name: ruby | Installs Ruby plugin | shell
+  command: "{{ asdf.bin }} plugin-add ruby"
+  register: ruby_add
+  failed_when: ruby_add.rc == 1
+
+- name: ruby | Updates Ruby plugin | shell
+  command: "{{ asdf.bin }} plugin-update ruby"
+
+- name: ruby | Installs Ruby versions | command
+  command: "{{ asdf.bin }} install ruby {{ item }}"
+  loop: "{{ ruby.versions }}"
+
+- name: ruby | Sets default Ruby version | command
+  command: "{{ asdf.bin }} global ruby {{ ruby.versions[0] }}"
+
+- name: yarn | Installs Yarn plugin | shell
+  command: "{{ asdf.bin }} plugin-add yarn"
+  register: yarn_add
+  failed_when: yarn_add.rc == 1
+
+- name: yarn | Updates Yarn plugin | shell
+  command: "{{ asdf.bin }} plugin-update yarn"
+
+- name: yarn | Installs Yarn versions | command
+  command: "{{ asdf.bin }} install yarn {{ item }}"
+  loop: "{{ yarn.versions }}"
+
+- name: yarn | Sets default Yarn version | command
+  command: "{{ asdf.bin }} global yarn {{ yarn.versions[0] }}"
+
+- name: rust | Installs Rust plugin | shell
+  command: "{{ asdf.bin }} plugin-add rust"
+  register: rust_add
+  failed_when: rust_add.rc == 1
+
+- name: rust | Updates Rust plugin | shell
+  command: "{{ asdf.bin }} plugin-update rust"
+
+- name: rust | Installs Rust versions | command
+  command: "{{ asdf.bin }} install rust {{ item }}"
+  loop: "{{ rust.versions }}"
+
+- name: rust | Sets default Rust version | command
+  command: "{{ asdf.bin }} global rust {{ rust.versions[0] }}"
+
+- name: asdf | Reshim languages | shell
+  command: "{{ asdf.bin }} reshim"
+
+################################################################################
+# NeoVIm
+
+- name: nerd-font | Create folder for fonts | file
+  file:
+    path: "{{ ansible_env.HOME }}/.local/share/fonts"
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_id }}"
+    state: directory
+    mode: 0755
+    recurse: yes
+
+- name: nerd-font | Check JetBrains Mono Nerd Font | stat
+  stat:
+    path: "{{ ansible_env.HOME }}/.local/share/fonts/JetBrainsMonoNerdFontMono-Regular.ttf"
+  register: nerd_fonts
+
+- name: nerd-font | Install a JetBrains Mono Nerd Font | unarchive
+  when: not nerd_fonts.stat.exists
+  unarchive:
+    src: "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/JetBrainsMono.zip"
+    dest: "{{ ansible_env.HOME }}/.local/share/fonts"
+    remote_src: yes
+
+- name: nerd-font | Update font cache | command
+  when: not nerd_fonts.stat.exists
+  command: fc-cache -fv
+
+- name: neovim | Delete cached NeoVIm config | file
+  file:
+    path: "{{ ansible_env.HOME }}/.local/share/nvim"
+    state: absent
+
+- name: elixirls | Download elixirls | git
+  git:
+    repo: "https://github.com/elixir-lsp/elixir-ls.git"
+    dest: "{{ ansible_env.HOME }}/.elixir-ls"
+    clone: yes
+    update: yes
+    force: yes
+
+- name: elixirls | Build elixir-ls | shell
+  shell: |
+    source {{ asdf.src }} &&
+    mix deps.get &&
+    MIX_ENV=prod mix compile &&
+    MIX_ENV=prod mix elixir_ls.release2 -o "{{ ansible_env.HOME }}/.elixir-ls/current"
+  args:
+    chdir: "{{ ansible_env.HOME }}/.elixir-ls"
+    executable: /bin/zsh
+
+- name: neovim | Install NvChad | git
+  git:
+    repo: "https://github.com/NvChad/NvChad.git"
+    dest: "{{ ansible_env.HOME }}/.config/nvim"
+    depth: 1
+    clone: yes
+    update: no
+    force: no
+
+- name: neovim | Create config folder | file
+  file:
+    path: "{{ ansible_env.HOME }}/.config/nvim/lua/custom"
+    state: directory
+
+- name: neovim | Create other config folder | file
+  file:
+    path: "{{ ansible_env.HOME }}/.config/nvim/lua/custom/configs"
+    state: directory
+
+- name: neovim | Copy NeoVIm config | copy
+  copy:
+    src: "{{ playbook_dir }}/links/init.lua.link"
+    dest: "{{ ansible_env.HOME }}/.config/nvim/lua/custom/init.lua"
+    remote_src: no
+    force: yes
+
+- name: neovim | Copy NvChad config | copy
+  copy:
+    src: "{{ playbook_dir }}/links/chadrc.lua.link"
+    dest: "{{ ansible_env.HOME }}/.config/nvim/lua/custom/chadrc.lua"
+    remote_src: no
+    force: yes
+
+- name: neovim | Copy NvChad plugins config | copy
+  copy:
+    src: "{{ playbook_dir }}/links/plugins.lua.link"
+    dest: "{{ ansible_env.HOME }}/.config/nvim/lua/custom/plugins.lua"
+    remote_src: no
+    force: yes
+
+- name: neovim | Copy NvChad mappings config | copy
+  copy:
+    src: "{{ playbook_dir }}/links/mappings.lua.link"
+    dest: "{{ ansible_env.HOME }}/.config/nvim/lua/custom/mappings.lua"
+    remote_src: no
+    force: yes
+
+- name: neovim | Copy NvChad lsp config | copy
+  copy:
+    src: "{{ playbook_dir }}/links/lspconfig.lua.link"
+    dest: "{{ ansible_env.HOME }}/.config/nvim/lua/custom/configs/lspconfig.lua"
+    remote_src: no
+    force: yes
+
+################################################################################
+# Nala
+
+- name: nala | Download Volian keyring | get_url
+  become: yes
+  become_method: sudo
+  get_url:
+    url: "https://deb.volian.org/volian/scar.key"
+    dest: "/etc/apt/trusted.gpg.d/volian-archive-scar-unstable.gpg"
+
+- name: nala | Create Volian repository file | apt_repository
+  become: yes
+  become_method: sudo
+  apt_repository:
+    repo: "deb http://deb.volian.org/volian/ scar main"
+    state: present
+    filename: volian-archive-scar-unstable
+
+- name: nala | Install Nala | apt
+  become: yes
+  become_method: sudo
+  apt:
+    pkg:
+    - nala
+    update_cache: yes

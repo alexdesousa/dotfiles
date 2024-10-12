@@ -1,0 +1,156 @@
+---
+###############################################################################
+# Extras
+
+- name: extras | Install dependencies | apt
+  become: yes
+  become_method: sudo
+  apt:
+    pkg:
+    - apt-transport-https
+    - ca-certificates
+    - gnupg
+    - curl
+    - tor
+    - proxychains
+    update_cache: yes
+
+- name: proxychains | Remove strict chains | lineinfile
+  become: yes
+  become_method: sudo
+  lineinfile:
+    path: "/etc/proxychains.conf"
+    state: present
+    regexp: '^strict_chain$'
+    line: "#strict_chain"
+
+- name: proxychains | Set random chains | lineinfile
+  become: yes
+  become_method: sudo
+  lineinfile:
+    path: "/etc/proxychains.conf"
+    state: present
+    regexp: '^#random_chain$'
+    line: "random_chain"
+
+- name: proxychains | Add socks5 | lineinfile
+  become: yes
+  become_method: sudo
+  lineinfile:
+    path: "/etc/proxychains.conf"
+    state: present
+    line: 'socks5  127.0.0.1 9050'
+
+- name: google-cloud | Download Google Cloud keyring | get_url
+  become: yes
+  become_method: sudo
+  get_url:
+    url: "https://packages.cloud.google.com/apt/doc/apt-key.gpg"
+    dest: "/usr/share/keyrings/cloud.google.asc"
+
+- name: google-cloud | Create Google Cloud repository file | apt_repository
+  become: yes
+  become_method: sudo
+  apt_repository:
+    repo: "deb [signed-by=/usr/share/keyrings/cloud.google.asc] https://packages.cloud.google.com/apt cloud-sdk main" 
+    state: present
+    filename: google-cloud-sdk
+
+- name: google-cloud | Install Google Cloud | apt
+  become: yes
+  become_method: sudo
+  apt:
+    pkg:
+    - google-cloud-sdk
+    - kubectl
+    - google-cloud-sdk-gke-gcloud-auth-plugin
+    update_cache: yes
+
+- name: spotify | Add Spotify repo | shell
+  become: yes
+  become_method: sudo
+  shell: |
+    curl -sS https://download.spotify.com/debian/pubkey_7A3A762FAFD4A51F.gpg |
+      gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg;
+    echo "deb http://repository.spotify.com stable non-free" |
+      tee /etc/apt/sources.list.d/spotify.list
+  args:
+    executable: /bin/zsh
+    warn: no
+
+- name: spotify | Install Spotify | apt
+  become: yes
+  become_method: sudo
+  apt:
+    pkg:
+    - spotify-client
+    update_cache: yes
+
+- name: logseq | Download Logseq | git
+  git:
+    repo: "https://github.com/logseq/logseq.git"
+    dest: "{{ ansible_env.HOME }}/.logseq"
+    version: "nightly"
+    clone: yes
+    update: yes
+    force: yes
+
+- name: logseq | Install Logseq dependencies | shell
+  shell: |
+    yarn install
+  args:
+    chdir: "{{ ansible_env.HOME }}/.logseq"
+    executable: /bin/zsh
+
+- name: logseq | Delete old Logseq | file
+  file:
+    path: "{{ ansible_env.HOME }}/.logseq/static/out"
+    state: absent
+
+- name: logseq | Build Logseq | shell
+  shell: |
+    yarn release-electron
+  args:
+    chdir: "{{ ansible_env.HOME }}/.logseq"
+    executable: /bin/zsh
+
+- name: logseq | Download second brain | git
+  git:
+    repo: "{{ second_brain.repo }}"
+    dest: "{{ ansible_env.HOME }}/.second-brain"
+    key_file: "{{ ansible_env.HOME }}/.ssh/id_ed25519"
+    accept_hostkey: yes
+    clone: yes
+    update: yes
+    force: yes
+
+- name: nala | Download archive | get_url
+  become: yes
+  become_method: sudo
+  get_url:
+    url: "https://deb.volian.org/volian/pool/main/v/volian-archive/volian-archive-nala_0.3.1_all.deb"
+    dest: "/tmp/nala-archive.deb"
+
+- name: nala | Download keyring | get_url
+  become: yes
+  become_method: sudo
+  get_url:
+    url: "https://deb.volian.org/volian/pool/main/v/volian-archive/volian-archive-keyring_0.3.1_all.deb"
+    dest: "/tmp/nala-keyring.deb"
+
+- name: nala | Install nala repo | apt
+  become: yes
+  become_method: sudo
+  apt:
+    pkg:
+    - "/tmp/nala-keyring.deb"
+    - "/tmp/nala-archive.deb"
+    update_cache: yes
+
+- name: nala | Install Nala | apt
+  become: yes
+  become_method: sudo
+  apt:
+    pkg:
+    - nala
+    update_cache: yes
