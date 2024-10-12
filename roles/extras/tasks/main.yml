@@ -90,6 +90,7 @@
   git:
     repo: "https://github.com/logseq/logseq.git"
     dest: "{{ ansible_env.HOME }}/.logseq"
+    version: "nightly"
     clone: yes
     update: yes
     force: yes
@@ -123,20 +124,28 @@
     update: yes
     force: yes
 
-- name: nala | Download Volian keyring | get_url
+- name: nala | Download archive | get_url
   become: yes
   become_method: sudo
   get_url:
-    url: "https://deb.volian.org/volian/scar.key"
-    dest: "/etc/apt/trusted.gpg.d/volian-archive-scar-unstable.gpg"
+    url: "https://deb.volian.org/volian/pool/main/v/volian-archive/volian-archive-nala_0.3.1_all.deb"
+    dest: "/tmp/nala-archive.deb"
 
-- name: nala | Create Volian repository file | apt_repository
+- name: nala | Download keyring | get_url
   become: yes
   become_method: sudo
-  apt_repository:
-    repo: "deb http://deb.volian.org/volian/ scar main"
-    state: present
-    filename: volian-archive-scar-unstable
+  get_url:
+    url: "https://deb.volian.org/volian/pool/main/v/volian-archive/volian-archive-keyring_0.3.1_all.deb"
+    dest: "/tmp/nala-keyring.deb"
+
+- name: nala | Install nala repo | apt
+  become: yes
+  become_method: sudo
+  apt:
+    pkg:
+    - "/tmp/nala-keyring.deb"
+    - "/tmp/nala-archive.deb"
+    update_cache: yes
 
 - name: nala | Install Nala | apt
   become: yes

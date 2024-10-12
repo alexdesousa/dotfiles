@@ -328,6 +328,13 @@
       update: yes
       force: yes
 
+  - name: gpg | Links gpg-agent.conf file | file
+    file:
+      src: "{{ playbook_dir }}/links/gpg-agent.conf.link"
+      dest: "{{ ansible_env.HOME }}/.gnupg/gpg-agent.conf"
+      state: link
+      force: yes
+
   - name: keys | Cleanup installed keys | file
     file:
       path: "{{ playbook_dir }}/keys.tar.gz.enc"
